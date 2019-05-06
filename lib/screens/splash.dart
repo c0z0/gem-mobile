@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../styles.dart' show TextStyles, Space;
+// import '../styles.dart' show TextStyles, Space;
 
-final _diamond = SvgPicture.asset(
-  'assets/diamond.svg',
-  width: 64,
-);
+// final _diamond = SvgPicture.asset(
+//   'assets/diamond.svg',
+//   width: 64,
+// );
 
 class Splash extends StatelessWidget {
   _checkLogin(BuildContext context) async {

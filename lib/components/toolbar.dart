@@ -4,6 +4,8 @@ import './input.dart';
 import '../styles.dart';
 
 class Toolbar extends StatelessWidget {
+  static double height = 3 * 2 + 16 + 10 * 2.0 + 12;
+
   final Function onSearchQueryChange;
 
   Toolbar({this.onSearchQueryChange});
@@ -11,11 +13,16 @@ class Toolbar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+      padding: EdgeInsets.symmetric(vertical: 3, horizontal: 12),
       child: Row(
         children: <Widget>[
-          AddButton(
-            onPressed: () {},
+          Hero(
+            tag: 'add-button',
+            child: AddButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed('/add');
+              },
+            ),
           ),
           Expanded(
             child: Input(
@@ -46,10 +53,10 @@ class AddButton extends StatelessWidget {
         ),
         Text(
           'Add',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.white, fontSize: 16),
         )
       ]),
-      padding: EdgeInsets.all(11),
+      padding: EdgeInsets.all(10),
       color: GemColors.purple,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.only(

@@ -62,25 +62,29 @@ class _InputState extends State<Input> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      style: TextStyles.input,
-      focusNode: _focus,
-      enabled: this.widget.enabled,
-      autofocus: this.widget.autoFocus,
-      onChanged: this.widget.onChanged,
-      keyboardType: this.widget.keyboardType,
-      onSubmitted: widget.onSubmitted,
-      decoration: InputDecoration(
-        hintText: this.widget.hintText,
-        filled: _focused,
-        hintStyle: TextStyle(color: Color(0xFFFDDDDDD)),
-        contentPadding: EdgeInsets.all(10),
-        fillColor: Color(0xFFFAFAFA),
-        focusedBorder: widget.flatLeft ? _borderFlatLeft : _border,
-        enabledBorder: widget.flatLeft ? _borderFlatLeft : _border,
-      ),
-      cursorColor: GemColors.text,
-      cursorWidth: 1,
+    return Stack(
+      children: <Widget>[
+        TextField(
+          style: TextStyles.input,
+          focusNode: _focus,
+          enabled: this.widget.enabled,
+          autofocus: this.widget.autoFocus,
+          onChanged: this.widget.onChanged,
+          keyboardType: this.widget.keyboardType,
+          onSubmitted: widget.onSubmitted,
+          decoration: InputDecoration(
+            hintText: this.widget.hintText,
+            filled: _focused,
+            hintStyle: TextStyle(color: Color(0xFFFDDDDDD)),
+            contentPadding: EdgeInsets.all(10),
+            fillColor: Color(0xFFFAFAFA),
+            focusedBorder: widget.flatLeft ? _borderFlatLeft : _border,
+            enabledBorder: widget.flatLeft ? _borderFlatLeft : _border,
+          ),
+          cursorColor: GemColors.text,
+          cursorWidth: 1,
+        ),
+      ],
     );
   }
 }

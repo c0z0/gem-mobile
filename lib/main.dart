@@ -4,6 +4,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import './screens/splash.dart';
+import './screens/add.dart';
 import './screens/login_screen.dart';
 import './screens/gems.dart';
 
@@ -40,9 +41,7 @@ class GemApp extends StatelessWidget {
 
     final client = ValueNotifier<GraphQLClient>(
       GraphQLClient(
-        cache: OptimisticCache(
-          dataIdFromObject: typenameDataIdFromObject,
-        ),
+        cache: InMemoryCache(),
         link: link,
       ),
     );
@@ -50,7 +49,7 @@ class GemApp extends StatelessWidget {
     return GraphQLProvider(
       client: client,
       child: MaterialApp(
-        debugShowCheckedModeBanner: false,
+        // debugShowCheckedModeBanner: false,
         theme: ThemeData(
           fontFamily: 'SanFrancisco',
           accentColor: GemColors.purple,
@@ -58,6 +57,7 @@ class GemApp extends StatelessWidget {
         ),
         routes: <String, WidgetBuilder>{
           '/login': (BuildContext context) => LoginScreen(),
+          '/add': (BuildContext context) => AddScreen(),
           '/gems': (BuildContext context) => Gems(),
         },
         home: Splash(),
