@@ -29,9 +29,11 @@ class Input extends StatefulWidget {
   final Function onSubmitted;
   final TextInputType keyboardType;
   final bool flatLeft;
+  final TextEditingController controller;
 
   Input(
       {this.hintText = '',
+      this.controller,
       this.onChanged,
       this.keyboardType,
       this.autoFocus: false,
@@ -61,10 +63,17 @@ class _InputState extends State<Input> {
   }
 
   @override
+  void dispose() {
+    _focus.removeListener(_onFocusChange);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
         TextField(
+          controller: widget.controller,
           style: TextStyles.input,
           focusNode: _focus,
           enabled: this.widget.enabled,

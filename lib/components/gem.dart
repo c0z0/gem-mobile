@@ -6,12 +6,21 @@ import '../styles.dart' show TextStyles, Space;
 
 class Gem extends StatelessWidget {
   final String title;
+  final bool favorite;
   final String id;
   final String href;
   final String displayUrl;
+  final Function onCopy;
   final Function onLongPress;
 
-  Gem({this.title, this.href, this.displayUrl, this.onLongPress, this.id});
+  Gem(
+      {this.title,
+      this.href,
+      this.favorite: false,
+      this.displayUrl,
+      this.onLongPress,
+      this.id,
+      this.onCopy});
 
   @override
   Widget build(BuildContext context) {
@@ -19,67 +28,82 @@ class Gem extends StatelessWidget {
 
     return Material(
       color: Colors.transparent,
-      child: Stack(
-        children: <Widget>[
-          InkWell(
-            onLongPress: onLongPress,
-            onTap: () {
-              launch(href,
-                  option: CustomTabsOption(
-                    toolbarColor: Colors.white,
-                    showPageTitle: true,
-                    enableDefaultShare: true,
-                  ));
-            },
-            splashColor: Colors.black.withAlpha(0x08),
-            highlightColor: Colors.black.withAlpha(0x05),
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: onLongPress != null ? 12 : 0,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Space.sml,
-                  Container(
-                    padding: EdgeInsets.only(right: 24),
-                    child: Text(
-                      title,
-                      style: TextStyles.gemTitle,
-                    ),
-                  ),
-                  Space.custom(8),
-                  Text(
-                    displayUrl,
-                    style: TextStyles.secondaryText,
-                  ),
-                  Space.sml,
-                  Container(
-                    height: 1,
-                    color: Color(0xFFEEEEEE),
-                  ),
-                ],
-              ),
-            ),
+      child: InkWell(
+        onLongPress: onLongPress,
+        onTap: () {
+          launch(href,
+              option: CustomTabsOption(
+                toolbarColor: Colors.white,
+                showPageTitle: true,
+                enableDefaultShare: true,
+              ));
+        },
+        splashColor: Colors.black.withAlpha(0x08),
+        highlightColor: Colors.black.withAlpha(0x05),
+        child: Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: onLongPress != null ? 12 : 0,
           ),
-          onLongPress != null
-              ? Positioned(
-                  right: 8,
-                  top: 18,
-                  child: GestureDetector(
-                    onTap: onLongPress,
-                    child: Container(
-                      padding: EdgeInsets.only(left: 8),
-                      child: Icon(
-                        Icons.more_vert,
-                        color: GemColors.blueGray.withAlpha(0xA0),
-                        size: 24,
-                      ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Space.sml,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Container(
+                          padding: EdgeInsets.only(right: 24),
+                          child: Text(
+                            title,
+                            style: TextStyles.gemTitle,
+                          ),
+                        ),
+                        Space.custom(8),
+                        Row(
+                          children: <Widget>[
+                            favorite
+                                ? Icon(
+                                    Icons.star,
+                                    size: 16,
+                                    color: GemColors.blueGray,
+                                  )
+                                : null,
+                            favorite ? HorSpace.custom(8) : null,
+                            Text(
+                              displayUrl,
+                              style: TextStyles.secondaryText,
+                            ),
+                          ].where((w) => w != null).toList(),
+                        ),
+                      ],
                     ),
                   ),
-                )
-              : null,
-        ].where((w) => w != null).toList(),
+                  onLongPress != null
+                      ? IconButton(
+                          onPressed: onLongPress,
+                          // alignment: Alignment.centerRight,
+                          padding: EdgeInsets.zero,
+                          icon: Icon(
+                            Icons.more_vert,
+                            color: GemColors.text,
+                            size: 20,
+                          ),
+                        )
+                      : null,
+                ].where((w) => w != null).toList(),
+              ),
+              Space.sml,
+              Container(
+                height: 1,
+                color: Color(0xFFEEEEEE),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

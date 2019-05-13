@@ -1,163 +1,82 @@
-import 'package:Gem/components/gem_details.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:flutter/material.dart' hide TabBar;
+import 'package:share/receive_share_state.dart';
 
-import '../components/navbar.dart';
-import '../components/gem.dart';
-import '../styles.dart';
-
-final _viewerQuery = """
-  query ViewerQuery {
-    viewer {
-      email
-      gems {
-        title
-        displayUrl
-        id
-        folderId
-        favorite
-        href
-        tags
-      }
-    }
-  }
-""";
+import '../components/tabbar.dart';
+import '../components/gem-list.dart';
+import '../components/menu.dart';
+import '../state/store.dart';
+import './add.dart';
 
 class Gems extends StatefulWidget {
   createState() => _GemsState();
 }
 
-class _GemsState extends State<Gems> {
-  String searchQuery = '';
+class _GemsState extends ReceiveShareState<Gems>
+    with SingleTickerProviderStateMixin {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final PageController _pageController = PageController();
 
-  final scrollController = ScrollController();
+  int _tabIndex = 0;
+  int _favorites = 0;
 
-  _showDetails(gem) {
-    Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => GemDetails(
-              gem: gem,
-            )));
+  _onTabChange(int index) {
+    setState(() {
+      _tabIndex = index == 2 ? 1 : 0;
+      _favorites = index == 2 ? _favorites : index;
+    });
+
+    _pageController.animateToPage(index == 2 ? 1 : 0,
+        duration: const Duration(milliseconds: 300), curve: Curves.ease);
   }
 
-  _onSearchQueryChange(q) {
+  _onPageChanged(int index) {
     setState(() {
-      searchQuery = q;
+      _tabIndex = index;
     });
   }
 
-  Widget _buildGems(List gems, bool loading) {
-    final filteredGems = gems
-        .where((g) =>
-            g['title'].toLowerCase().contains(searchQuery.toLowerCase()) ||
-            g['displayUrl'].toLowerCase().contains(searchQuery.toLowerCase()))
-        .toList();
+  @override
+  void receiveShare(share) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => AddScreen(url: share.text),
+        ));
+  }
 
-    return ListView.builder(
-      padding: EdgeInsets.only(top: 32 + NavBar.height),
-      itemCount: loading ? 7 : filteredGems.length + 1,
-      controller: scrollController,
-      physics: loading ? NeverScrollableScrollPhysics() : null,
-      itemBuilder: (BuildContext context, int index) {
-        if (index == 0)
-          return Container(
-            padding: EdgeInsets.symmetric(horizontal: 12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text('My Gems', style: TextStyles.h1),
-                Space.sml,
-              ],
-            ),
-          );
-
-        if (loading) return GemPlaceholder();
-
-        final g = filteredGems[index - 1];
-        return Gem(
-          onLongPress: () {
-            _showDetails(g);
-          },
-          displayUrl: g['displayUrl'],
-          id: g['id'],
-          href: g['href'],
-          title: g['title'],
-        );
-      },
-    );
+  @override
+  void initState() {
+    enableShareReceiving();
+    getStore().fetch();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       body: Container(
         color: Colors.white,
         child: SafeArea(
-          child: Query(
-            options: QueryOptions(
-              document: _viewerQuery,
-              pollInterval: 10,
-            ),
-            builder: (QueryResult result, {VoidCallback refetch}) {
-              if (result.errors != null) {
-                print(result.errors);
-                return Text('error...');
-              }
-
-              return Column(
-                children: <Widget>[
-                  Expanded(
-                    child: Stack(
-                      children: <Widget>[
-                        Container(),
-                        Positioned.fill(
-                          child: _buildGems(
-                              result.loading
-                                  ? []
-                                  : result.data['viewer']['gems'],
-                              result.loading),
-                        ),
-                        NavBar(
-                          controller: scrollController,
-                          onSearchQueryChange: _onSearchQueryChange,
-                        ),
-                      ],
+          child: Column(
+            children: <Widget>[
+              Expanded(
+                child: PageView(
+                  onPageChanged: _onPageChanged,
+                  controller: _pageController,
+                  children: <Widget>[
+                    GemList(
+                      scaffoldKey: _scaffoldKey,
+                      favorites: _favorites == 1,
                     ),
-                  ),
-                  Container(height: 1, color: GemColors.border),
-                  Container(
-                    color: Colors.white,
-                    padding: EdgeInsets.all(16),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: <Widget>[
-                        GestureDetector(
-                          onTap: () {
-                            _showDetails(null);
-                          },
-                          child: Icon(
-                            Icons.home,
-                            size: 28,
-                            color: GemColors.purple,
-                          ),
-                        ),
-                        Icon(
-                          Icons.star_border,
-                          size: 28,
-                          color: GemColors.blueGray,
-                        ),
-                        Icon(
-                          Icons.menu,
-                          size: 28,
-                          color: GemColors.blueGray,
-                        )
-                      ],
-                    ),
-                  )
-                ],
-              );
-            },
+                    Menu(),
+                  ],
+                ),
+              ),
+              TabBar(
+                  activeIndex: _tabIndex == 0 ? _favorites : 2,
+                  onTap: _onTabChange),
+            ],
           ),
         ),
       ),

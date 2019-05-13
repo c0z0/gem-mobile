@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+// import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:share/receive_share_state.dart';
+
+import './add.dart';
 
 // import '../styles.dart' show TextStyles, Space;
 
@@ -9,7 +12,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 //   width: 64,
 // );
 
-class Splash extends StatelessWidget {
+class Splash extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _SplashState();
+}
+
+class _SplashState extends ReceiveShareState<Splash> {
   _checkLogin(BuildContext context) async {
     SharedPreferences storage = await SharedPreferences.getInstance();
     final session = storage.getString('session');
@@ -21,9 +29,28 @@ class Splash extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    _checkLogin(context);
+  void receiveShare(share) async {
+    SharedPreferences storage = await SharedPreferences.getInstance();
+    final session = storage.getString('session');
 
+    // if (session == null)
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => AddScreen(url: share.text),
+        ));
+  }
+
+  @override
+  void initState() {
+    // _animationController.forward();
+    _checkLogin(context);
+    enableShareReceiving();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
         padding: EdgeInsets.only(left: 48, right: 48, top: 192),

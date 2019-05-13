@@ -1,28 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:flutter/services.dart';
 
 import '../components/navbar.dart';
 import '../components/input.dart';
 import '../components/button.dart';
 import '../styles.dart';
-
-final _addGemMutation = """
-mutation AddGem(\$url: String!) {
-  createGem(url: \$url, tags: [], favorite: false) {
-    title
-    displayUrl
-    id
-    folderId
-    favorite
-    href
-    tags
-  }
-}
-""";
+import '../state/store.dart';
 
 class AddScreen extends StatefulWidget {
-  createState() => _AddScreenState();
+  final String url;
+
+  createState() => _AddScreenState(sharedUrl: this.url);
+
+  AddScreen({this.url: ''});
 }
 
 final _diamond = SvgPicture.asset(
@@ -30,28 +21,36 @@ final _diamond = SvgPicture.asset(
   width: 48,
 );
 
-class _AddScreenState extends State<AddScreen> {
-  String _url = '';
+class _AddScreenState extends State<AddScreen>
+    with SingleTickerProviderStateMixin {
+  TextEditingController _controller;
 
-  _onUrlChange(s) {
+  String _url;
+  String sharedUrl;
+
+  _AddScreenState({this.sharedUrl});
+
+  @override
+  void initState() {
+    _controller = TextEditingController(text: sharedUrl);
+    _url = sharedUrl;
+
+    _controller.addListener(_onUrlChange);
+
+    // _animationController.forward();
+    super.initState();
+  }
+
+  _onUrlChange() {
     setState(() {
-      _url = s;
+      _url = _controller.text;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Mutation(
-      options: MutationOptions(
-        document: _addGemMutation,
-      ),
-      onCompleted: (res) {
-        Navigator.of(context).pop();
-      },
-      builder: (
-        RunMutation runMutation,
-        QueryResult result,
-      ) {
+    return GemsStoreConsumer(
+      builder: (BuildContext context, GemsData data, GemsStore store) {
         return Scaffold(
           body: Container(
             padding:
@@ -66,15 +65,46 @@ class _AddScreenState extends State<AddScreen> {
                   Space.lrg,
                   Text('Link:', style: TextStyles.secondaryText),
                   Space.custom(8),
-                  Row(children: <Widget>[
-                    Expanded(
-                        child: Input(
-                      enabled: true,
-                      autoFocus: true,
-                      onChanged: _onUrlChange,
-                      hintText: 'example.com',
-                    )),
-                  ]),
+                  Stack(
+                    children: <Widget>[
+                      Container(
+                        height: 48,
+                      ),
+                      Positioned(
+                        top: 0,
+                        left: 0,
+                        right: -12,
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: Input(
+                                controller: _controller,
+                                enabled: true,
+                                autoFocus: true,
+                                hintText: 'example.com',
+                              ),
+                            ),
+                            IconButton(
+                              color: GemColors.purple,
+                              icon: Icon(
+                                Icons.content_paste,
+                                color: GemColors.text,
+                              ),
+                              onPressed: () async {
+                                ClipboardData data =
+                                    await Clipboard.getData('text/plain');
+                                _controller.text = data.text;
+                                _controller.selection = TextSelection(
+                                    baseOffset: 0,
+                                    extentOffset: data.text.length);
+                                // _onUrlChange(data.text);
+                              },
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                   Space.med,
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -82,33 +112,26 @@ class _AddScreenState extends State<AddScreen> {
                     children: <Widget>[
                       PrimaryButton(
                         onPressed: () {
-                          runMutation({'url': _url});
+                          store.createGem(_url, () {
+                            Navigator.pop(context);
+                          });
                         },
-                        text: result.loading ? 'Loading...' : 'Add gem',
-                        disabled: _url.length == 0 || result.loading,
+                        text: data.createLoading ? 'Loading...' : 'Add gem',
+                        disabled: _url.length == 0 || data.createLoading,
                       ),
                       FlatButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: Row(
-                          children: <Widget>[
-                            // Icon(
-                            //   Icons.arrow_back,
-                            //   size: 16,
-                            // ),
-                            HorSpace.sml,
-                            Text(
-                              'CANCEL',
-                              style: TextStyle(color: GemColors.text),
-                            )
-                          ],
-                        ),
-                      )
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text(
+                            'CANCEL',
+                            textAlign: TextAlign.end,
+                            style: TextStyle(color: GemColors.text),
+                          ))
                     ],
                   ),
                   Space.sml,
-                  result.errors != null
+                  data.createError
                       ? Text('Something went wrong', style: TextStyles.error)
                       : null,
                 ].where((w) => w != null).toList(),

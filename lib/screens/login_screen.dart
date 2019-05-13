@@ -67,8 +67,9 @@ class _LoginScreenState extends State<LoginScreen> {
         document: _sendEmailMutation,
       ),
       onCompleted: (dynamic res) {
-        _onLoginIdChange(
-            res.data['login']['id'], res.data['login']['verificationCode']);
+        print(res);
+
+        _onLoginIdChange(res['login']['id'], res['login']['verificationCode']);
       },
       builder: (
         RunMutation runMutation,

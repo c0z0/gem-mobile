@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../styles.dart';
 
@@ -36,16 +35,6 @@ class TitleBar extends StatelessWidget {
               ],
             ),
           ),
-          GestureDetector(
-            child: Text('Logout', style: TextStyles.text),
-            onTap: () async {
-              SharedPreferences storage = await SharedPreferences.getInstance();
-
-              storage.remove('session');
-
-              Navigator.of(context).pushReplacementNamed('/login');
-            },
-          )
         ],
       ),
     );
