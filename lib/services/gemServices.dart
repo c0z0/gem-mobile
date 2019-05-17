@@ -51,8 +51,8 @@ clearCache() {
 }
 
 final _addGemMutation = """
-mutation AddGem(\$url: String!) {
-  createGem(url: \$url, tags: [], favorite: false) {
+mutation AddGem(\$url: String!, \$folderId: ID) {
+  createGem(url: \$url, tags: [], favorite: false, folderId: \$folderId) {
     title
     displayUrl
     id
@@ -64,13 +64,13 @@ mutation AddGem(\$url: String!) {
 }
 """;
 
-Future createGem(String url) async {
+Future createGem(String url, String folderId) async {
   final client = _getClient();
 
   return await client.mutate(
     MutationOptions(
       document: _addGemMutation,
-      variables: {'url': url},
+      variables: {'url': url, 'folderId': folderId},
     ),
   );
 }
@@ -115,6 +115,45 @@ Future toggleFavorite(String id) async {
   return await client.mutate(
     MutationOptions(
       document: _toggleFavoriteMutation,
+      variables: {'id': id},
+    ),
+  );
+}
+
+final _moveGemMutation = """
+ mutation MoveGem(\$id: ID!, \$folderId: ID) {
+    moveGem(id: \$id, folderId: \$folderId) {
+      id
+      folderId
+    }
+  }
+""";
+
+Future moveGem(String id, String folderId) async {
+  final client = _getClient();
+
+  return await client.mutate(
+    MutationOptions(
+      document: _moveGemMutation,
+      variables: {'id': id, 'folderId': folderId},
+    ),
+  );
+}
+
+final _undoDeleteGemMutation = """
+  mutation UndoDeleteGem(\$id: ID!) {
+    undoDeleteGem(id: \$id) {
+        id
+    }
+  }
+""";
+
+Future undoDeleteGem(String id) async {
+  final client = _getClient();
+
+  return await client.mutate(
+    MutationOptions(
+      document: _undoDeleteGemMutation,
       variables: {'id': id},
     ),
   );

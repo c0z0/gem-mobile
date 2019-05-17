@@ -25,6 +25,7 @@ dependencies:
   flutter_svg: ^0.12.4
   rxdart: ^0.21.0
   get_it: ^1.0.3
+  flushbar: ^1.5.0
   graphql_flutter: ^1.0.0
   cupertino_icons: ^0.1.2
   shared_preferences: ^0.4.3

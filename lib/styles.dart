@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class GemColors {
   static var purple = Color(0xFF75489B);
+  static var amber = Color(0xFFFFA654);
   static var blueGray = Color(0xFF98A4A8);
   static var text = Color(0xFF484848);
   static var border = Color(0xFFEEEEEE);

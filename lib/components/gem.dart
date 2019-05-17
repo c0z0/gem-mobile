@@ -2,7 +2,7 @@ import 'package:Gem/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 
-import '../styles.dart' show TextStyles, Space;
+import 'package:Gem/styles.dart' show TextStyles, Space;
 
 class Gem extends StatelessWidget {
   final String title;
@@ -24,8 +24,6 @@ class Gem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(this.id);
-
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -89,7 +87,7 @@ class Gem extends StatelessWidget {
                           padding: EdgeInsets.zero,
                           icon: Icon(
                             Icons.more_vert,
-                            color: GemColors.text,
+                            color: GemColors.blueGray,
                             size: 20,
                           ),
                         )
@@ -109,11 +107,56 @@ class Gem extends StatelessWidget {
   }
 }
 
-class GemPlaceholder extends StatelessWidget {
+class GemPlaceholder extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _GemPlaceholderState();
+}
+
+class _GemPlaceholderState extends State<GemPlaceholder>
+    with SingleTickerProviderStateMixin {
+  AnimationController _animationController;
+  Animation<Color> _animation;
+
+  @override
+  void initState() {
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    )..repeat();
+
+    _animation = TweenSequence<Color>([
+      TweenSequenceItem(
+        weight: 1.0,
+        tween: ColorTween(
+          begin: Colors.black.withAlpha(0x8),
+          end: Colors.black.withAlpha(0xD),
+        ),
+      ),
+      TweenSequenceItem(
+        weight: 1.0,
+        tween: ColorTween(
+          end: Colors.black.withAlpha(0x8),
+          begin: Colors.black.withAlpha(0xD),
+        ),
+      ),
+    ]).animate(_animationController)
+      ..addListener(() {
+        setState(() {});
+      });
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final _color = Colors.black.withAlpha(0x8);
-    final _secondColor = Colors.black.withAlpha(0x6);
+    final _color = _animation.value;
+    final _secondColor = _color;
 
     final _decoration = BoxDecoration(
       color: _color,

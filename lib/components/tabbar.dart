@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../styles.dart';
+import 'package:Gem/styles.dart';
 
 class TabBar extends StatelessWidget {
   final Function(int index) onTap;
@@ -20,7 +20,7 @@ class TabBar extends StatelessWidget {
         Material(
           color: Colors.white,
           child: Container(
-            padding: EdgeInsets.symmetric(vertical: 8),
+            padding: EdgeInsets.symmetric(vertical: 4),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -47,10 +47,10 @@ class TabBar extends StatelessWidget {
                 ),
                 IconButton(
                   onPressed: () {
-                    onTap(1);
+                    onTap(2);
                   },
                   icon: Icon(
-                    Icons.menu,
+                    Icons.add_box,
                     size: 28,
                     color: _getColor(2),
                   ),

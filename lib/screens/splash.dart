@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:share/receive_share_state.dart';
 
-import './add.dart';
+import 'package:Gem/screens/add.dart';
 
 // import '../styles.dart' show TextStyles, Space;
 

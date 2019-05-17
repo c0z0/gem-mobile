@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../styles.dart' show GemColors;
+
+import 'package:Gem/styles.dart' show GemColors;
 
 class PrimaryButton extends StatelessWidget {
   final String text;

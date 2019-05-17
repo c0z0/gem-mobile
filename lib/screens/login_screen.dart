@@ -1,12 +1,14 @@
+import 'package:Gem/styles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/gestures.dart';
 
-import '../styles.dart' show TextStyles, Space;
-import '../components/button.dart' show PrimaryButton;
-import '../components/input.dart' show Input;
+import 'package:Gem/styles.dart' show TextStyles, Space;
+import 'package:Gem/components/button.dart' show PrimaryButton;
+import 'package:Gem/components/input.dart' show Input;
 
 final _diamond = SvgPicture.asset(
   'assets/diamond.svg',
@@ -39,10 +41,24 @@ class _LoginScreenState extends State<LoginScreen> {
   var _email = '';
   var _verificationCode;
   var _loginId;
+  TextEditingController _inputController = TextEditingController();
 
-  _onEmailChange(text) {
+  @override
+  initState() {
+    _inputController.addListener(_onEmailChange);
+
+    super.initState();
+  }
+
+  @override
+  dispose() {
+    _inputController.removeListener(_onEmailChange);
+    super.dispose();
+  }
+
+  _onEmailChange() {
     setState(() {
-      _email = text;
+      _email = _inputController.text;
     });
   }
 
@@ -50,6 +66,13 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {
       _loginId = id;
       _verificationCode = verificationCode;
+    });
+  }
+
+  _undoLogin() {
+    setState(() {
+      _verificationCode = null;
+      _loginId = null;
     });
   }
 
@@ -67,8 +90,6 @@ class _LoginScreenState extends State<LoginScreen> {
         document: _sendEmailMutation,
       ),
       onCompleted: (dynamic res) {
-        print(res);
-
         _onLoginIdChange(res['login']['id'], res['login']['verificationCode']);
       },
       builder: (
@@ -88,6 +109,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             Space.med,
             Input(
+              controller: _inputController,
               hintText: 'you@domain.com',
               keyboardType: TextInputType.emailAddress,
               autoFocus: true,
@@ -145,7 +167,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: <TextSpan>[
                   TextSpan(text: 'We sent an email to '),
                   TextSpan(text: '$_email', style: TextStyles.bold),
-                  TextSpan(text: '.'),
+                  TextSpan(text: ' ('),
+                  TextSpan(
+                    text: 'undo',
+                    style: TextStyle(
+                      color: GemColors.purple,
+                    ),
+                    recognizer: new TapGestureRecognizer()..onTap = _undoLogin,
+                  ),
+                  TextSpan(text: ').'),
                 ],
               ),
             ),
@@ -163,6 +193,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ],
               ),
             ),
+            Space.med,
           ],
         );
       },

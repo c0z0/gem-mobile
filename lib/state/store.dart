@@ -2,7 +2,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
-import '../services/gemServices.dart' as services;
+import 'package:Gem/services/gemServices.dart' as services;
 
 GetIt _getIt = new GetIt();
 
@@ -14,10 +14,12 @@ class GemsData {
   bool createLoading;
   bool createError;
   String viewerEmail;
+  int deletedIndex;
   bool error;
 
   GemsData({
     this.folders,
+    this.deletedIndex,
     this.viewerEmail,
     this.gems,
     this.loading: true,
@@ -38,6 +40,7 @@ class GemsStore {
     return GemsData(
       folders: _data.value.folders,
       gems: _data.value.gems,
+      deletedIndex: _data.value.deletedIndex,
       viewerEmail: _data.value.viewerEmail,
       error: _data.value.error,
       loading: _data.value.loading,
@@ -65,11 +68,11 @@ class GemsStore {
     _data.add(newData);
   }
 
-  createGem(String url, Function success) async {
+  createGem(String url, String folderId, Function success) async {
     _setCreateLoading();
 
     try {
-      Map result = (await services.createGem(url)).data;
+      Map result = (await services.createGem(url, folderId)).data;
       Map newGem = result['createGem'];
 
       final _newData = _cloneData();
@@ -94,7 +97,32 @@ class GemsStore {
     services.deleteGem(id);
 
     final _newData = _cloneData();
+    _newData.deletedIndex = _newData.gems.indexWhere((g) => g['id'] == id);
     _newData.gems = _newData.gems.where((g) => g['id'] != id).toList();
+
+    _data.add(_newData);
+    success();
+  }
+
+  undoDeleteGem(String id, int index, dynamic gem, Function success) async {
+    services.undoDeleteGem(id);
+
+    final _newData = _cloneData();
+    _newData.gems = _newData.gems..insert(_newData.deletedIndex, gem);
+
+    _data.add(_newData);
+    success();
+  }
+
+  moveGem(String id, String folderId, Function success) async {
+    services.moveGem(id, folderId);
+
+    final _newData = _cloneData();
+    _newData.gems = _newData.gems.map((g) {
+      if (g['id'] != id) return g;
+      g['folderId'] = folderId;
+      return g;
+    }).toList();
 
     _data.add(_newData);
     success();

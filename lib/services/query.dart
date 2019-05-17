@@ -39,7 +39,6 @@ class _CustomQueryState extends State<CustomQuery> {
   Future pause(Duration d) => new Future.delayed(d);
 
   _onRefetch({bool resetCache: true}) async {
-    print('refetch');
 
     if (resetCache) _client.cache.reset();
 

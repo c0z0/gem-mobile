@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import './input.dart';
-import '../styles.dart';
+import 'package:Gem/components/input.dart';
+import 'package:Gem/styles.dart';
 
 class Toolbar extends StatelessWidget {
   static double height =

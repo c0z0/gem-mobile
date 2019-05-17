@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../styles.dart';
+import 'package:Gem/styles.dart';
 
 var _border = OutlineInputBorder(
   borderSide: BorderSide(
@@ -78,7 +78,6 @@ class _InputState extends State<Input> {
           focusNode: _focus,
           enabled: this.widget.enabled,
           autofocus: this.widget.autoFocus,
-          onChanged: this.widget.onChanged,
           keyboardType: this.widget.keyboardType,
           onSubmitted: widget.onSubmitted,
           decoration: InputDecoration(

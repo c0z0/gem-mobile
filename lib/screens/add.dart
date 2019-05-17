@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/services.dart';
 
-import '../components/navbar.dart';
-import '../components/input.dart';
-import '../components/button.dart';
-import '../styles.dart';
-import '../state/store.dart';
+import 'package:Gem/components/navbar.dart';
+import 'package:Gem/components/input.dart';
+import 'package:Gem/components/button.dart';
+import 'package:Gem/styles.dart';
+import 'package:Gem/state/store.dart';
 
 class AddScreen extends StatefulWidget {
   final String url;
@@ -26,6 +26,7 @@ class _AddScreenState extends State<AddScreen>
   TextEditingController _controller;
 
   String _url;
+  String _selectedFolderId;
   String sharedUrl;
 
   _AddScreenState({this.sharedUrl});
@@ -47,11 +48,34 @@ class _AddScreenState extends State<AddScreen>
     });
   }
 
+  _onFolderChange(String id) {
+    setState(() {
+      _selectedFolderId = id;
+    });
+  }
+
+  Map<String, dynamic> _getFolder() {
+    if (_selectedFolderId == null) return {'id': null, 'title': 'No folder'};
+    return getStore()
+        .current
+        .folders
+        .firstWhere((f) => f['id'] == _selectedFolderId);
+  }
+
+  _showFolders() {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) => FolderSelector(
+              onFolderSelected: _onFolderChange,
+            ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return GemsStoreConsumer(
       builder: (BuildContext context, GemsData data, GemsStore store) {
         return Scaffold(
+          backgroundColor: Colors.white,
           body: Container(
             padding:
                 EdgeInsets.only(top: NavBar.height - 64, left: 12, right: 12),
@@ -88,7 +112,7 @@ class _AddScreenState extends State<AddScreen>
                               color: GemColors.purple,
                               icon: Icon(
                                 Icons.content_paste,
-                                color: GemColors.text,
+                                color: GemColors.blueGray,
                               ),
                               onPressed: () async {
                                 ClipboardData data =
@@ -105,6 +129,45 @@ class _AddScreenState extends State<AddScreen>
                       ),
                     ],
                   ),
+                  Space.sml,
+                  Text('Folder:', style: TextStyles.secondaryText),
+                  Space.custom(8),
+                  Material(
+                    color: Colors.white,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          width: 1,
+                          color: Color(0xFFDDDDDD),
+                        ),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(7.0),
+                        ),
+                      ),
+                      child: InkWell(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(6.0),
+                        ),
+                        onTap: _showFolders,
+                        child: Container(
+                          padding: EdgeInsets.all(10),
+                          child: Row(
+                            children: <Widget>[
+                              Icon(
+                                Icons.folder_open,
+                                color: GemColors.blueGray,
+                              ),
+                              HorSpace.sml,
+                              Text(
+                                _getFolder()['title'] ?? 'No folder',
+                                style: TextStyles.gemTitle,
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                   Space.med,
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -112,7 +175,7 @@ class _AddScreenState extends State<AddScreen>
                     children: <Widget>[
                       PrimaryButton(
                         onPressed: () {
-                          store.createGem(_url, () {
+                          store.createGem(_url, _selectedFolderId, () {
                             Navigator.pop(context);
                           });
                         },
@@ -140,6 +203,94 @@ class _AddScreenState extends State<AddScreen>
           ),
         );
       },
+    );
+  }
+}
+
+class FolderSelector extends StatelessWidget {
+  final Function(String id) onFolderSelected;
+
+  FolderSelector({this.onFolderSelected});
+
+  Widget _buildFolders(BuildContext context) {
+    List<dynamic> folders = getStore().current.folders;
+
+    List<Widget> builtFolders = folders
+        .map(
+          (f) => ListTile(
+                dense: true,
+                contentPadding: EdgeInsets.symmetric(horizontal: 28),
+                leading: Icon(Icons.folder_open),
+                title: Text(
+                  f['title'],
+                  style: TextStyles.gemTitle,
+                ),
+                onTap: () {
+                  onFolderSelected(f['id']);
+                  Navigator.pop(context);
+                },
+              ),
+        )
+        .toList();
+
+    return Material(
+      color: Colors.white,
+      child: Column(
+        children: <Widget>[
+          ListTile(
+            dense: true,
+            contentPadding: EdgeInsets.symmetric(horizontal: 28),
+            leading: Icon(Icons.create_new_folder),
+            // enabled: false,
+            title: Text(
+              'New folder',
+              style: TextStyles.gemTitle,
+            ),
+            onTap: () {
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            dense: true,
+            contentPadding: EdgeInsets.symmetric(horizontal: 28),
+            leading: Icon(Icons.remove),
+            title: Text(
+              'No folder',
+              style: TextStyles.gemTitle,
+            ),
+            onTap: () {
+              onFolderSelected(null);
+              Navigator.pop(context);
+            },
+          ),
+        ]..addAll(builtFolders),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Container(
+        color: Colors.white,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              padding: EdgeInsets.only(top: 36, left: 28, right: 28),
+              color: Colors.white,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text('Select folder', style: TextStyles.h1),
+                  Space.med,
+                ],
+              ),
+            ),
+            _buildFolders(context),
+          ],
+        ),
+      ),
     );
   }
 }

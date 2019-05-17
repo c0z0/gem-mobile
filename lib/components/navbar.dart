@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../components/title_bar.dart';
-import '../components/toolbar.dart';
+import 'package:Gem/components/title_bar.dart';
+import 'package:Gem/components/toolbar.dart';
 
 final _diamond = SvgPicture.asset(
   'assets/diamond.svg',
@@ -24,16 +24,15 @@ class NavBar extends StatefulWidget {
 class _NavBarState extends State<NavBar> with SingleTickerProviderStateMixin {
   AnimationController _animationController;
   Animation<int> _animation;
+  Animation<double> _animationLeftOffset;
+  Animation<double> _animationSmallDiamondY;
+  Animation<double> _animationSmallDiamondOpacity;
 
   int _shadowAlpha;
   bool _minimized;
 
   _max(a, b) {
     return a > b ? a : b;
-  }
-
-  _min(a, b) {
-    return a < b ? a : b;
   }
 
   _onScroll() {
@@ -59,12 +58,24 @@ class _NavBarState extends State<NavBar> with SingleTickerProviderStateMixin {
       vsync: this,
     );
 
-    _animation = IntTween(begin: 0, end: 0x1F).animate(_animationController)
+    _animation = IntTween(begin: 0, end: 0x1F).animate(
+        CurvedAnimation(parent: _animationController, curve: Curves.easeOut))
       ..addListener(() {
         setState(() {
           _shadowAlpha = _animation.value;
         });
       });
+
+    _animationLeftOffset = Tween<double>(begin: 0, end: 48).animate(
+        CurvedAnimation(parent: _animationController, curve: Curves.easeOut));
+
+    _animationSmallDiamondY =
+        Tween<double>(begin: -32, end: Toolbar.height / 2 - 16).animate(
+            CurvedAnimation(
+                parent: _animationController, curve: Curves.easeOut));
+
+    _animationSmallDiamondOpacity = Tween<double>(begin: -1, end: 1).animate(
+        CurvedAnimation(parent: _animationController, curve: Curves.easeOut));
 
     widget.controller.addListener(_onScroll);
 
@@ -81,24 +92,18 @@ class _NavBarState extends State<NavBar> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(boxShadow: [
-        BoxShadow(
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
             color: Colors.black.withAlpha(_shadowAlpha),
             offset: Offset(0, 4),
-            blurRadius: 10)
-      ]),
+            blurRadius: 10,
+          )
+        ],
+      ),
       child: AnimatedBuilder(
         animation: widget.controller,
         builder: (BuildContext context, Widget child) {
-          final sideOffset = _min(
-            _max(0.0, widget.controller.offset - TitleBar.height),
-            48.0,
-          );
-
-          final opacity = sideOffset / 48;
-
-          final diamondOffset = opacity * (Toolbar.height / 2 + 16) - 32;
-
           return Stack(
             children: <Widget>[
               Container(
@@ -120,7 +125,7 @@ class _NavBarState extends State<NavBar> with SingleTickerProviderStateMixin {
               ),
               Positioned(
                 top: _max(TitleBar.height - widget.controller.offset, 0.0),
-                left: sideOffset,
+                left: _animationLeftOffset.value,
                 right: 0,
                 child: Toolbar(
                   onSearchQueryChange: widget.onSearchQueryChange,
@@ -139,9 +144,10 @@ class _NavBarState extends State<NavBar> with SingleTickerProviderStateMixin {
               ),
               Positioned(
                 left: 12,
-                top: diamondOffset,
+                top: _animationSmallDiamondY.value +
+                    _max(TitleBar.height - widget.controller.offset, 0.0),
                 child: Opacity(
-                  opacity: opacity,
+                  opacity: _max(_animationSmallDiamondOpacity.value, 0.0),
                   child: Hero(
                     tag: _minimized ? 'diamond' : 'innactive-diamond',
                     child: _diamond,

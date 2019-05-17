@@ -4,14 +4,13 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:share/receive_share_state.dart';
 
-import './screens/splash.dart';
-import './screens/add.dart';
-import './screens/login_screen.dart';
+import 'package:Gem/screens/splash.dart';
+import 'package:Gem/screens/add.dart';
+import 'package:Gem/screens/login_screen.dart';
 import './screens/gems.dart';
-import './state/store.dart';
-import 'services/gemServices.dart' show registerClient;
-
-import './styles.dart' show GemColors;
+import 'package:Gem/state/store.dart';
+import 'package:Gem/services/gemServices.dart' show registerClient;
+import 'package:Gem/styles.dart' show GemColors;
 
 final httpLink = HttpLink(
   uri: 'https://gem.cserdean.com/api',

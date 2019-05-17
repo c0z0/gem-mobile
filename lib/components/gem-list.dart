@@ -1,11 +1,12 @@
 import 'package:Gem/components/gem_details.dart';
 import 'package:flutter/material.dart' hide TabBar;
 import 'package:flutter/rendering.dart';
+import 'package:flushbar/flushbar.dart';
 
-import '../components/navbar.dart';
-import '../components/gem.dart';
-import '../styles.dart';
-import '../state/store.dart';
+import 'package:Gem/components/navbar.dart';
+import 'package:Gem/components/gem.dart';
+import 'package:Gem/styles.dart';
+import 'package:Gem/state/store.dart';
 
 class GemList extends StatefulWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
@@ -30,6 +31,7 @@ class _GemListState extends State<GemList> {
   List<Widget> _buildFolders(List gems, List folders) {
     List<Widget> folderList = folders
         .map((f) => ExpansionTile(
+              key: PageStorageKey<String>(f['id']),
               title: Text(f['title']),
               children: gems
                   .where((g) => g['folderId'] == f['id'])
@@ -121,9 +123,13 @@ class _GemListState extends State<GemList> {
         builder: (BuildContext bc) {
           return GemDetails(
             gem: gem,
-            scaffoldKey: widget.scaffoldKey,
+            showSnackbar: (Flushbar bar) {
+              bar..show(context);
+            },
             deleteGem: deleteGem,
             toggleFavorite: toggleFavorite,
+            index:
+                getStore().current.gems.indexWhere((g) => g['id'] == gem['id']),
           );
         });
   }

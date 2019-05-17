@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart' hide TabBar;
 import 'package:share/receive_share_state.dart';
 
-import '../components/tabbar.dart';
-import '../components/gem-list.dart';
-import '../components/menu.dart';
-import '../state/store.dart';
-import './add.dart';
+import 'package:Gem/components/tabbar.dart';
+import 'package:Gem/components/gem-list.dart';
+import 'package:Gem/state/store.dart';
+import 'package:Gem/screens/add.dart';
 
 class Gems extends StatefulWidget {
   createState() => _GemsState();
@@ -20,13 +19,19 @@ class _GemsState extends ReceiveShareState<Gems>
   int _favorites = 0;
 
   _onTabChange(int index) {
-    setState(() {
-      _tabIndex = index == 2 ? 1 : 0;
-      _favorites = index == 2 ? _favorites : index;
-    });
+    if (index == 2) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => AddScreen(),
+        ),
+      );
+      return;
+    }
 
-    _pageController.animateToPage(index == 2 ? 1 : 0,
-        duration: const Duration(milliseconds: 300), curve: Curves.ease);
+    setState(() {
+      _favorites = index;
+    });
   }
 
   _onPageChanged(int index) {
@@ -69,7 +74,6 @@ class _GemsState extends ReceiveShareState<Gems>
                       scaffoldKey: _scaffoldKey,
                       favorites: _favorites == 1,
                     ),
-                    Menu(),
                   ],
                 ),
               ),
