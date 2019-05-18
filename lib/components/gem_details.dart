@@ -256,28 +256,30 @@ class _GemDetailsState extends State<GemDetails>
     return SingleChildScrollView(
       child: Container(
         color: Colors.white,
-        child: Column(
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.only(top: 36, left: 28, right: 28),
-              color: Colors.white,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text('Gem details', style: TextStyles.h1),
-                  Space.med,
-                  Gem(
-                    id: widget.gem['id'],
-                    displayUrl: widget.gem['displayUrl'],
-                    href: widget.gem['href'],
-                    favorite: widget.gem['favorite'],
-                    title: widget.gem['title'],
-                  ),
-                ],
+        child: SafeArea(
+          child: Column(
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.only(top: 36, left: 28, right: 28),
+                color: Colors.white,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text('Gem details', style: TextStyles.h1),
+                    Space.med,
+                    Gem(
+                      id: widget.gem['id'],
+                      displayUrl: widget.gem['displayUrl'],
+                      href: widget.gem['href'],
+                      favorite: widget.gem['favorite'],
+                      title: widget.gem['title'],
+                    ),
+                  ],
+                ),
               ),
-            ),
-            _showFolders ? _buildFolders() : _buildMenu(),
-          ],
+              _showFolders ? _buildFolders() : _buildMenu(),
+            ],
+          ),
         ),
       ),
     );

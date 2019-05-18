@@ -273,22 +273,24 @@ class FolderSelector extends StatelessWidget {
     return SingleChildScrollView(
       child: Container(
         color: Colors.white,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.only(top: 36, left: 28, right: 28),
-              color: Colors.white,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text('Select folder', style: TextStyles.h1),
-                  Space.med,
-                ],
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.only(top: 36, left: 28, right: 28),
+                color: Colors.white,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text('Select folder', style: TextStyles.h1),
+                    Space.med,
+                  ],
+                ),
               ),
-            ),
-            _buildFolders(context),
-          ],
+              _buildFolders(context),
+            ],
+          ),
         ),
       ),
     );

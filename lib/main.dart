@@ -3,6 +3,7 @@ import 'package:flutter/services.dart' show SystemChrome, DeviceOrientation;
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:share/receive_share_state.dart';
+import 'dart:io' show Platform;
 
 import 'package:Gem/screens/splash.dart';
 import 'package:Gem/screens/add.dart';
@@ -65,7 +66,7 @@ class _GemAppState extends ReceiveShareState<GemApp> {
   @override
   void initState() {
     // _animationController.forward();
-    enableShareReceiving();
+    if (Platform.isAndroid) enableShareReceiving();
     super.initState();
   }
 

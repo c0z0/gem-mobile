@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart' hide TabBar;
 import 'package:share/receive_share_state.dart';
+import 'dart:io' show Platform;
 
 import 'package:Gem/components/tabbar.dart';
 import 'package:Gem/components/gem-list.dart';
@@ -51,7 +52,7 @@ class _GemsState extends ReceiveShareState<Gems>
 
   @override
   void initState() {
-    enableShareReceiving();
+    if (Platform.isAndroid) enableShareReceiving();
     getStore().fetch();
     super.initState();
   }

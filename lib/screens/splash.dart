@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 // import 'package:flutter_svg/flutter_svg.dart';
+import 'dart:io' show Platform;
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:share/receive_share_state.dart';
 
@@ -45,7 +47,7 @@ class _SplashState extends ReceiveShareState<Splash> {
   void initState() {
     // _animationController.forward();
     _checkLogin(context);
-    enableShareReceiving();
+    if (Platform.isAndroid) enableShareReceiving();
     super.initState();
   }
 
