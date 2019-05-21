@@ -1,0 +1,6 @@
+{
+  "version": 2,
+  "name": "gem-releases",
+  "alias": "app.gem.cserdean.com",
+  "routes": [{ "src": "/(.*)", "dest": "gem.apk" }]
+}
