@@ -33,6 +33,28 @@ GraphQLClient _getClient() {
   return getIt.get<GraphQLClient>();
 }
 
+final _checkSessionQuery = """
+  query checkSession {
+    viewer {
+      __typename
+      id
+    }
+  }
+""";
+
+Future<bool> checkSession() async {
+  final client = _getClient();
+
+  final res = await client.query(
+    QueryOptions(
+      document: _checkSessionQuery,
+      fetchPolicy: FetchPolicy.networkOnly,
+    ),
+  );
+
+  return res.data['viewer'] != null;
+}
+
 Future fetchViewer() async {
   final client = _getClient();
 

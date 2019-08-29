@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:io' show Platform;
-
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:share/receive_share_state.dart';
 
 import 'package:Gem/screens/add.dart';
+import 'package:Gem/services/gemServices.dart' show checkSession;
 
 final _diamond = SvgPicture.asset(
   'assets/diamond.svg',
@@ -24,6 +24,11 @@ class _SplashState extends ReceiveShareState<Splash> {
 
     if (session == null)
       return Navigator.of(context).pushReplacementNamed('/login');
+
+    if (!(await checkSession())) {
+      await storage.remove('session');
+      return Navigator.of(context).pushReplacementNamed('/login');
+    }
 
     Navigator.of(context).pushReplacementNamed('/gems');
   }
