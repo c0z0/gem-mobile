@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/gestures.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import 'package:Gem/styles.dart' show TextStyles, Space;
 import 'package:Gem/components/button.dart' show PrimaryButton;
@@ -18,6 +19,14 @@ final _diamond = SvgPicture.asset(
 class LoginScreen extends StatefulWidget {
   createState() => _LoginScreenState();
 }
+
+const _googleLoginMutation = """
+   mutation Login(\$token: String!) {
+    googleLogin(token: \$token) {
+      token
+    }
+  }
+""";
 
 const _sendEmailMutation = """
   mutation Login(\$email: String!) {
@@ -87,50 +96,96 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildForm() {
     return Mutation(
       options: MutationOptions(
-        document: _sendEmailMutation,
+        document: _googleLoginMutation,
       ),
       onCompleted: (dynamic res) {
-        _onLoginIdChange(res['login']['id'], res['login']['verificationCode']);
+        _onVerified(context, res['googleLogin']['token']);
       },
       builder: (
-        RunMutation runMutation,
-        QueryResult result,
+        RunMutation runGoogleLoginMutation,
+        QueryResult googleLoginResult,
       ) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              'Welcome,',
-              style: TextStyles.title,
-            ),
-            Text(
-              'sign in to get started',
-              style: TextStyles.subtitle,
-            ),
-            Space.med,
-            Input(
-              controller: _inputController,
-              hintText: 'you@domain.com',
-              keyboardType: TextInputType.emailAddress,
-              autoFocus: true,
-              onChanged: _onEmailChange,
-              onSubmitted: (s) {
-                if (_email.length > 0) runMutation({'email': _email});
-              },
-            ),
-            Space.sml,
-            PrimaryButton(
-              onPressed: () {
-                runMutation({'email': _email});
-              },
-              text: result.loading ? 'Loading...' : 'Continue',
-              disabled: _email.length == 0 || result.loading,
-            ),
-            Space.sml,
-            result.errors != null
-                ? Text('Something went wrong', style: TextStyles.error)
-                : null,
-          ].where((t) => t != null).toList(),
+        return Mutation(
+          options: MutationOptions(
+            document: _sendEmailMutation,
+          ),
+          onCompleted: (dynamic res) {
+            _onLoginIdChange(
+                res['login']['id'], res['login']['verificationCode']);
+          },
+          builder: (
+            RunMutation runMutation,
+            QueryResult result,
+          ) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  'Welcome,',
+                  style: TextStyles.title,
+                ),
+                Text(
+                  'sign in to get started',
+                  style: TextStyles.subtitle,
+                ),
+                Space.med,
+                Input(
+                  controller: _inputController,
+                  hintText: 'you@domain.com',
+                  keyboardType: TextInputType.emailAddress,
+                  autoFocus: true,
+                  onChanged: _onEmailChange,
+                  onSubmitted: (s) {
+                    if (_email.length > 0) runMutation({'email': _email});
+                  },
+                ),
+                Space.sml,
+                PrimaryButton(
+                  onPressed: () {
+                    runMutation({'email': _email});
+                  },
+                  text: result.loading || googleLoginResult.loading
+                      ? 'Loading...'
+                      : 'Continue',
+                  disabled: _email.length == 0 ||
+                      result.loading ||
+                      googleLoginResult.loading,
+                ),
+                Space.sml,
+                RichText(
+                  softWrap: true,
+                  text: TextSpan(
+                    style: TextStyles.text,
+                    children: <TextSpan>[
+                      TextSpan(
+                        text: 'Sign in with Google',
+                        style: TextStyle(
+                          color: GemColors.purple,
+                        ),
+                        recognizer: new TapGestureRecognizer()
+                          ..onTap = () async {
+                            GoogleSignIn _googleSignIn = GoogleSignIn(
+                              scopes: [
+                                'email',
+                              ],
+                            );
+                            GoogleSignInAccount res =
+                                await _googleSignIn.signIn();
+                            GoogleSignInAuthentication auth =
+                                await res.authentication;
+                            runGoogleLoginMutation({'token': auth.idToken});
+                          },
+                      ),
+                    ],
+                  ),
+                ),
+                Space.sml,
+                result.errors != null
+                    ? Text('Something went wrong', style: TextStyles.error)
+                    : null,
+              ].where((t) => t != null).toList(),
+            );
+          },
         );
       },
     );
