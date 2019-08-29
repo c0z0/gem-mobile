@@ -3,6 +3,7 @@ import 'package:share/share.dart';
 import 'package:flutter/services.dart';
 import 'package:flushbar/flushbar.dart';
 
+import 'package:Gem/components/create_folder.dart';
 import 'package:Gem/styles.dart';
 import 'package:Gem/state/store.dart';
 import 'package:Gem/components/gem.dart';
@@ -29,6 +30,7 @@ class GemDetails extends StatefulWidget {
 class _GemDetailsState extends State<GemDetails>
     with SingleTickerProviderStateMixin {
   bool _showFolders = false;
+  bool _showCreateFolder = false;
 
   _showSnackbar(String message, {Function onPressed, String actionText}) {
     widget.showSnackbar(Flushbar(
@@ -60,6 +62,12 @@ class _GemDetailsState extends State<GemDetails>
   _toggleFolders() {
     setState(() {
       _showFolders = !_showFolders;
+    });
+  }
+
+  _toggleCreateFolder() {
+    setState(() {
+      _showCreateFolder = !_showCreateFolder;
     });
   }
 
@@ -243,7 +251,7 @@ class _GemDetailsState extends State<GemDetails>
               style: TextStyles.gemTitle,
             ),
             onTap: () {
-              _toggleFolders();
+              _toggleCreateFolder();
             },
           ),
         ]..addAll(folders),
@@ -251,8 +259,7 @@ class _GemDetailsState extends State<GemDetails>
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget buildDetails(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
         color: Colors.white,
@@ -283,5 +290,21 @@ class _GemDetailsState extends State<GemDetails>
         ),
       ),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_showCreateFolder)
+      return CreateFolder(
+        onCancel: _toggleCreateFolder,
+        onCreate: (Map<String, dynamic> folder) {
+          getStore().moveGem(widget.gem['id'], folder['id'], () {
+            Navigator.pop(context);
+            _showSnackbar("Gem moved to ${folder['title']}");
+          });
+        },
+      );
+
+    return buildDetails(context);
   }
 }

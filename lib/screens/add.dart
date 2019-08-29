@@ -1,3 +1,4 @@
+import 'package:Gem/components/create_folder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/services.dart';
@@ -207,10 +208,22 @@ class _AddScreenState extends State<AddScreen>
   }
 }
 
-class FolderSelector extends StatelessWidget {
+class FolderSelector extends StatefulWidget {
   final Function(String id) onFolderSelected;
 
   FolderSelector({this.onFolderSelected});
+  @override
+  createState() => _FolderSelectorState();
+}
+
+class _FolderSelectorState extends State<FolderSelector> {
+  bool _showCreateFolder = false;
+
+  _toggleCreateFolder() {
+    setState(() {
+      _showCreateFolder = !_showCreateFolder;
+    });
+  }
 
   Widget _buildFolders(BuildContext context) {
     List<dynamic> folders = getStore().current.folders;
@@ -226,7 +239,7 @@ class FolderSelector extends StatelessWidget {
                   style: TextStyles.gemTitle,
                 ),
                 onTap: () {
-                  onFolderSelected(f['id']);
+                  widget.onFolderSelected(f['id']);
                   Navigator.pop(context);
                 },
               ),
@@ -247,7 +260,7 @@ class FolderSelector extends StatelessWidget {
               style: TextStyles.gemTitle,
             ),
             onTap: () {
-              Navigator.pop(context);
+              _toggleCreateFolder();
             },
           ),
           ListTile(
@@ -259,7 +272,7 @@ class FolderSelector extends StatelessWidget {
               style: TextStyles.gemTitle,
             ),
             onTap: () {
-              onFolderSelected(null);
+              widget.onFolderSelected(null);
               Navigator.pop(context);
             },
           ),
@@ -270,6 +283,15 @@ class FolderSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (_showCreateFolder)
+      return CreateFolder(
+        onCancel: _toggleCreateFolder,
+        onCreate: (Map<String, dynamic> folder) {
+          widget.onFolderSelected(folder['id']);
+          Navigator.pop(context);
+        },
+      );
+
     return SingleChildScrollView(
       child: Container(
         color: Colors.white,
