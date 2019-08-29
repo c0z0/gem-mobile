@@ -52,6 +52,8 @@ Future<bool> checkSession() async {
   //   ),
   // );
 
+  await Future.delayed(Duration(milliseconds: 500));
+
   return true;
 }
 
