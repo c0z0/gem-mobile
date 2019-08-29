@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
+import 'package:package_info/package_info.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -13,7 +14,24 @@ final _diamond = SvgPicture.asset(
   width: 64,
 );
 
-class Menu extends StatelessWidget {
+class Menu extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _MenuState();
+}
+
+class _MenuState extends State<Menu> {
+  String _buildNumber = "";
+
+  @override
+  void initState() {
+    PackageInfo.fromPlatform().then((data) {
+      setState(() {
+        _buildNumber = data.buildNumber;
+      });
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,6 +74,11 @@ class Menu extends StatelessWidget {
                             style: TextStyles.secondaryText,
                           ),
                         ),
+                        Space.sml,
+                        Text(
+                          'Build number: $_buildNumber',
+                          style: TextStyles.secondaryText,
+                        )
                       ],
                     ),
                   ),
