@@ -1,6 +1,5 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:package_info/package_info.dart';
 
@@ -8,11 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:Gem/state/store.dart';
 import 'package:Gem/styles.dart';
-
-final _diamond = SvgPicture.asset(
-  'assets/diamond.svg',
-  width: 64,
-);
+import 'package:Gem/components/spinning_diamond.dart';
 
 class Menu extends StatefulWidget {
   @override
@@ -47,7 +42,12 @@ class _MenuState extends State<Menu> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Hero(tag: 'diamond', child: _diamond),
+                        Hero(
+                          tag: 'diamond',
+                          child: SpinningDiamond(
+                            constantSpeed: .5,
+                          ),
+                        ),
                         Space.med,
                         Text('Gem', style: TextStyles.title),
                         Text('keep your online finds',

@@ -1,6 +1,5 @@
 import 'package:Gem/components/create_folder.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/services.dart';
 
 import 'package:Gem/components/navbar.dart';
@@ -8,6 +7,7 @@ import 'package:Gem/components/input.dart';
 import 'package:Gem/components/button.dart';
 import 'package:Gem/styles.dart';
 import 'package:Gem/state/store.dart';
+import 'package:Gem/components/spinning_diamond.dart';
 
 class AddScreen extends StatefulWidget {
   final String url;
@@ -17,9 +17,8 @@ class AddScreen extends StatefulWidget {
   AddScreen({this.url: ''});
 }
 
-final _diamond = SvgPicture.asset(
-  'assets/diamond.svg',
-  width: 48,
+final _diamond = SpinningDiamond(
+  size: 48,
 );
 
 class _AddScreenState extends State<AddScreen>
@@ -231,18 +230,18 @@ class _FolderSelectorState extends State<FolderSelector> {
     List<Widget> builtFolders = folders
         .map(
           (f) => ListTile(
-                dense: true,
-                contentPadding: EdgeInsets.symmetric(horizontal: 28),
-                leading: Icon(Icons.folder_open),
-                title: Text(
-                  f['title'],
-                  style: TextStyles.gemTitle,
-                ),
-                onTap: () {
-                  widget.onFolderSelected(f['id']);
-                  Navigator.pop(context);
-                },
-              ),
+            dense: true,
+            contentPadding: EdgeInsets.symmetric(horizontal: 28),
+            leading: Icon(Icons.folder_open),
+            title: Text(
+              f['title'],
+              style: TextStyles.gemTitle,
+            ),
+            onTap: () {
+              widget.onFolderSelected(f['id']);
+              Navigator.pop(context);
+            },
+          ),
         )
         .toList();
 

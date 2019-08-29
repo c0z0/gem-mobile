@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:io' show Platform;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:share/receive_share_state.dart';
 
 import 'package:Gem/screens/add.dart';
 import 'package:Gem/services/gemServices.dart' show checkSession;
-
-final _diamond = SvgPicture.asset(
-  'assets/diamond.svg',
-  width: 128,
-);
+import 'package:Gem/components/spinning_diamond.dart' show SpinningDiamond;
 
 class Splash extends StatefulWidget {
   @override
@@ -59,7 +54,15 @@ class _SplashState extends ReceiveShareState<Splash> {
     return Scaffold(
       body: Container(
         color: Colors.white,
-        child: Center(child: _diamond),
+        child: Center(
+          child: Hero(
+            child: SpinningDiamond(
+              size: 128,
+              constantSpeed: 1,
+            ),
+            tag: 'diamond',
+          ),
+        ),
       ),
     );
   }

@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:Gem/styles.dart';
 import 'package:Gem/components/menu.dart';
+import 'package:Gem/components/spinning_diamond.dart';
 
-final _diamond = SvgPicture.asset(
-  'assets/diamond.svg',
-  width: 40,
-  height: 40,
+final _diamond = SpinningDiamond(
+  size: 40,
 );
 
 class TitleBar extends StatelessWidget {

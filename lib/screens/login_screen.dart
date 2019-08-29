@@ -1,7 +1,6 @@
 import 'package:Gem/styles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/gestures.dart';
@@ -11,11 +10,7 @@ import 'package:Gem/styles.dart' show TextStyles, Space;
 import 'package:Gem/components/button.dart' show PrimaryButton;
 import 'package:Gem/components/input.dart' show Input;
 import 'package:Gem/utlis.dart' show checkForUpdate;
-
-final _diamond = SvgPicture.asset(
-  'assets/diamond.svg',
-  width: 64,
-);
+import 'package:Gem/components/spinning_diamond.dart';
 
 class LoginScreen extends StatefulWidget {
   createState() => _LoginScreenState();
@@ -271,7 +266,9 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  _diamond,
+                  SpinningDiamond(
+                    constantSpeed: .5,
+                  ),
                   Space.lrg,
                   _verificationCode != null
                       ? _buildAwaitingVerification(context)

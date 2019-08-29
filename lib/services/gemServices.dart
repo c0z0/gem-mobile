@@ -52,7 +52,7 @@ Future<bool> checkSession() async {
   //   ),
   // );
 
-  await Future.delayed(Duration(milliseconds: 500));
+  await Future.delayed(Duration(seconds: 1));
 
   return true;
 }
