@@ -158,3 +158,23 @@ Future undoDeleteGem(String id) async {
     ),
   );
 }
+
+final _createFolderMutation = """
+  mutation createFolder(\$title: String!) {
+    createFolder(title: \$title) {
+      title
+      id
+    }
+  }
+""";
+
+Future createFolder(String title) async {
+  final client = _getClient();
+
+  return await client.mutate(
+    MutationOptions(
+      document: _createFolderMutation,
+      variables: {'title': title},
+    ),
+  );
+}

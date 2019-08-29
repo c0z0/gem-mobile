@@ -93,6 +93,28 @@ class GemsStore {
     }
   }
 
+  createFolder(String title, Function success) async {
+    try {
+      Map result = (await services.createFolder(title)).data;
+      Map newFolder = result['createFolder'];
+
+      final _newData = _cloneData();
+      _newData.folders.insert(0, newFolder);
+
+      _data.add(_newData);
+
+      success(newFolder);
+    } catch (err) {
+      print(err);
+
+      final _newData = _cloneData();
+      _newData.createLoading = false;
+      _newData.createError = true;
+
+      _data.add(_newData);
+    }
+  }
+
   deleteGem(String id, Function success) async {
     services.deleteGem(id);
 

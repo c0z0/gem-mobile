@@ -3,6 +3,7 @@ import 'package:share/share.dart';
 import 'package:flutter/services.dart';
 import 'package:flushbar/flushbar.dart';
 
+import 'package:Gem/components/create_folder.dart';
 import 'package:Gem/styles.dart';
 import 'package:Gem/state/store.dart';
 import 'package:Gem/components/gem.dart';
@@ -29,6 +30,7 @@ class GemDetails extends StatefulWidget {
 class _GemDetailsState extends State<GemDetails>
     with SingleTickerProviderStateMixin {
   bool _showFolders = false;
+  bool _showCreateFolder = false;
 
   _showSnackbar(String message, {Function onPressed, String actionText}) {
     widget.showSnackbar(Flushbar(
@@ -51,7 +53,7 @@ class _GemDetailsState extends State<GemDetails>
           : null,
       duration: Duration(seconds: 3),
       animationDuration: Duration(milliseconds: 500),
-      aroundPadding: EdgeInsets.all(12),
+      padding: EdgeInsets.all(12),
       borderRadius: 6,
       backgroundColor: GemColors.text,
     ));
@@ -60,6 +62,12 @@ class _GemDetailsState extends State<GemDetails>
   _toggleFolders() {
     setState(() {
       _showFolders = !_showFolders;
+    });
+  }
+
+  _toggleCreateFolder() {
+    setState(() {
+      _showCreateFolder = !_showCreateFolder;
     });
   }
 
@@ -176,20 +184,20 @@ class _GemDetailsState extends State<GemDetails>
         .where((f) => f['id'] != widget.gem['folderId'])
         .map(
           (f) => ListTile(
-                dense: true,
-                contentPadding: EdgeInsets.symmetric(horizontal: 28),
-                leading: Icon(Icons.folder_open),
-                title: Text(
-                  f['title'],
-                  style: TextStyles.gemTitle,
-                ),
-                onTap: () {
-                  getStore().moveGem(widget.gem['id'], f['id'], () {
-                    Navigator.pop(context);
-                    _showSnackbar("Gem moved to ${f['title']}");
-                  });
-                },
-              ),
+            dense: true,
+            contentPadding: EdgeInsets.symmetric(horizontal: 28),
+            leading: Icon(Icons.folder_open),
+            title: Text(
+              f['title'],
+              style: TextStyles.gemTitle,
+            ),
+            onTap: () {
+              getStore().moveGem(widget.gem['id'], f['id'], () {
+                Navigator.pop(context);
+                _showSnackbar("Gem moved to ${f['title']}");
+              });
+            },
+          ),
         )
         .toList();
 
@@ -243,7 +251,7 @@ class _GemDetailsState extends State<GemDetails>
               style: TextStyles.gemTitle,
             ),
             onTap: () {
-              _toggleFolders();
+              _toggleCreateFolder();
             },
           ),
         ]..addAll(folders),
@@ -251,8 +259,7 @@ class _GemDetailsState extends State<GemDetails>
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget buildDetails(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
         color: Colors.white,
@@ -283,5 +290,21 @@ class _GemDetailsState extends State<GemDetails>
         ),
       ),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_showCreateFolder)
+      return CreateFolder(
+        onCancel: _toggleCreateFolder,
+        onCreate: (Map<String, dynamic> folder) {
+          getStore().moveGem(widget.gem['id'], folder['id'], () {
+            Navigator.pop(context);
+            _showSnackbar("Gem moved to ${folder['title']}");
+          });
+        },
+      );
+
+    return buildDetails(context);
   }
 }
