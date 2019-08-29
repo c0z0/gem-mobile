@@ -10,6 +10,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:Gem/styles.dart' show TextStyles, Space;
 import 'package:Gem/components/button.dart' show PrimaryButton;
 import 'package:Gem/components/input.dart' show Input;
+import 'package:Gem/utlis.dart' show checkForUpdate;
 
 final _diamond = SvgPicture.asset(
   'assets/diamond.svg',
@@ -55,6 +56,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   initState() {
     _inputController.addListener(_onEmailChange);
+    checkForUpdate(context);
 
     super.initState();
   }

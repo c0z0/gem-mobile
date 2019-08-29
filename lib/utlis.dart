@@ -2,8 +2,14 @@ import 'package:package_info/package_info.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'dart:io' show Platform;
+import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
+
+bool showed = false;
 
 void checkForUpdate(BuildContext context) async {
+  if (!Platform.isAndroid || showed) return;
+
   String buildNumber = (await PackageInfo.fromPlatform()).buildNumber;
   final response = await http.get("https://app.gem.cserdean.com/info");
 
@@ -12,6 +18,8 @@ void checkForUpdate(BuildContext context) async {
   Map<String, dynamic> data = json.decode(response.body);
 
   String latestVersion = data['latestVersion'].toString();
+
+  showed = true;
 
   if (buildNumber != latestVersion || true)
     showDialog(
@@ -28,9 +36,19 @@ void checkForUpdate(BuildContext context) async {
               ),
               FlatButton(
                 child: Text('INSTALL'),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  _installUpdate();
+                },
               ),
             ],
           );
         });
+}
+
+void _installUpdate() async {
+  launch('https://app.gem.cserdean.com/',
+      option: CustomTabsOption(
+        toolbarColor: Colors.white,
+      ));
 }
