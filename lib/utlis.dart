@@ -21,7 +21,7 @@ void checkForUpdate(BuildContext context) async {
 
   showed = true;
 
-  if (buildNumber != latestVersion || true)
+  if (buildNumber != latestVersion)
     showDialog(
         context: context,
         builder: (BuildContext context) {

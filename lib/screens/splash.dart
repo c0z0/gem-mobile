@@ -7,11 +7,9 @@ import 'package:share/receive_share_state.dart';
 
 import 'package:Gem/screens/add.dart';
 
-import '../styles.dart' show TextStyles, Space;
-
 final _diamond = SvgPicture.asset(
   'assets/diamond.svg',
-  width: 64,
+  width: 128,
 );
 
 class Splash extends StatefulWidget {
@@ -55,27 +53,8 @@ class _SplashState extends ReceiveShareState<Splash> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        padding: EdgeInsets.only(left: 48, right: 48, top: 192),
         color: Colors.white,
-        child: Row(
-          children: <Widget>[
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                _diamond,
-                Space.lrg,
-                Text(
-                  'Gem',
-                  style: TextStyles.title,
-                ),
-                Text(
-                  'Keep your online finds',
-                  style: TextStyles.subtitle,
-                )
-              ],
-            )
-          ],
-        ),
+        child: Center(child: _diamond),
       ),
     );
   }
