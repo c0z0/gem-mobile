@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:io' show Platform;
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -7,12 +7,12 @@ import 'package:share/receive_share_state.dart';
 
 import 'package:Gem/screens/add.dart';
 
-// import '../styles.dart' show TextStyles, Space;
+import '../styles.dart' show TextStyles, Space;
 
-// final _diamond = SvgPicture.asset(
-//   'assets/diamond.svg',
-//   width: 64,
-// );
+final _diamond = SvgPicture.asset(
+  'assets/diamond.svg',
+  width: 64,
+);
 
 class Splash extends StatefulWidget {
   @override
@@ -32,8 +32,8 @@ class _SplashState extends ReceiveShareState<Splash> {
 
   @override
   void receiveShare(share) async {
-    SharedPreferences storage = await SharedPreferences.getInstance();
-    final session = storage.getString('session');
+    // SharedPreferences storage = await SharedPreferences.getInstance();
+    // final session = storage.getString('session');
 
     // if (session == null)
     Navigator.push(
@@ -57,25 +57,25 @@ class _SplashState extends ReceiveShareState<Splash> {
       body: Container(
         padding: EdgeInsets.only(left: 48, right: 48, top: 192),
         color: Colors.white,
-        // child: Row(
-        //   children: <Widget>[
-        //     Column(
-        //       crossAxisAlignment: CrossAxisAlignment.start,
-        //       children: <Widget>[
-        //         _diamond,
-        //         Space.lrg,
-        //         Text(
-        //           'Gem',
-        //           style: TextStyles.title,
-        //         ),
-        //         Text(
-        //           'Keep your online finds',
-        //           style: TextStyles.subtitle,
-        //         )
-        //       ],
-        //     )
-        //   ],
-        // ),
+        child: Row(
+          children: <Widget>[
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                _diamond,
+                Space.lrg,
+                Text(
+                  'Gem',
+                  style: TextStyles.title,
+                ),
+                Text(
+                  'Keep your online finds',
+                  style: TextStyles.subtitle,
+                )
+              ],
+            )
+          ],
+        ),
       ),
     );
   }

@@ -52,9 +52,9 @@ class GemApp extends StatefulWidget {
 class _GemAppState extends ReceiveShareState<GemApp> {
   @override
   void receiveShare(share) async {
-    SharedPreferences storage = await SharedPreferences.getInstance();
+    // SharedPreferences storage = await SharedPreferences.getInstance();
 
-    final session = storage.getString('session');
+    // final session = storage.getString('session');
     // if (session != null)
     Navigator.push(
         context,

@@ -6,6 +6,7 @@ import 'package:Gem/components/tabbar.dart';
 import 'package:Gem/components/gem-list.dart';
 import 'package:Gem/state/store.dart';
 import 'package:Gem/screens/add.dart';
+import 'package:Gem/utlis.dart' show checkForUpdate;
 
 class Gems extends StatefulWidget {
   createState() => _GemsState();
@@ -54,6 +55,7 @@ class _GemsState extends ReceiveShareState<Gems>
   void initState() {
     if (Platform.isAndroid) enableShareReceiving();
     getStore().fetch();
+    checkForUpdate(context);
     super.initState();
   }
 
