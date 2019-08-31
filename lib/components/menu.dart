@@ -16,6 +16,7 @@ class Menu extends StatefulWidget {
 
 class _MenuState extends State<Menu> {
   String _buildNumber = "";
+  int _showBuildNumberTaps = 0;
 
   @override
   void initState() {
@@ -32,89 +33,119 @@ class _MenuState extends State<Menu> {
     return Scaffold(
       body: GemsStoreConsumer(
         builder: (BuildContext context, GemsData data, GemsStore store) {
-          return Container(
-            padding: EdgeInsets.only(left: 48, right: 48, bottom: 48),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start,
-                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Hero(
-                          tag: 'diamond',
-                          child: SpinningDiamond(
-                            constantSpeed: .5,
-                          ),
-                        ),
-                        Space.med,
-                        Text('Gem', style: TextStyles.title),
-                        Text('keep your online finds',
-                            style: TextStyles.subtitle),
-                        Space.sml,
-                        RichText(
-                          text: TextSpan(
-                            children: <TextSpan>[
-                              TextSpan(text: 'Built by '),
-                              TextSpan(
-                                  text: 'cserdean.com',
-                                  style: TextStyles.secondaryText.apply(
-                                      decoration: TextDecoration.underline),
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () {
-                                      launch('https://cserdean.com',
-                                          option: CustomTabsOption(
-                                            toolbarColor: Colors.white,
-                                            showPageTitle: true,
-                                            enableDefaultShare: true,
-                                          ));
-                                    }),
-                            ],
-                            style: TextStyles.secondaryText,
-                          ),
-                        ),
-                        Space.sml,
-                        Text(
-                          'Build number: $_buildNumber',
-                          style: TextStyles.secondaryText,
-                        )
-                      ],
+          return SafeArea(
+            child: Stack(
+              children: <Widget>[
+                Positioned(
+                  right: 2,
+                  top: 16,
+                  child: IconButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    icon: Icon(
+                      Icons.close,
+                      color: GemColors.blueGray,
                     ),
                   ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      ListTile(
-                        contentPadding: EdgeInsets.all(0),
-                        dense: true,
-                        title: Text(
-                          data.loading
-                              ? 'Loading...'
-                              : 'Logged in as ${data.viewerEmail}.',
-                          style: TextStyles.gemTitle,
+                ),
+                Container(
+                  padding: EdgeInsets.only(left: 48, right: 48, bottom: 48),
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+                      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              SpinningDiamond(
+                                constantSpeed: .5,
+                              ),
+                              Space.med,
+                              Text('Gem', style: TextStyles.title),
+                              Text('keep your online finds',
+                                  style: TextStyles.subtitle),
+                              Space.sml,
+                              RichText(
+                                text: TextSpan(
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                        text: 'Built by ',
+                                        recognizer: TapGestureRecognizer()
+                                          ..onTap = () {
+                                            setState(() {
+                                              _showBuildNumberTaps =
+                                                  (_showBuildNumberTaps + 1) %
+                                                      6;
+                                            });
+                                          }),
+                                    TextSpan(
+                                      text: 'cserdean.com',
+                                      style: TextStyles.secondaryText.apply(
+                                          decoration: TextDecoration.underline),
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () {
+                                          launch('https://cserdean.com',
+                                              option: CustomTabsOption(
+                                                toolbarColor: Colors.white,
+                                                showPageTitle: true,
+                                                enableDefaultShare: true,
+                                              ));
+                                        },
+                                    ),
+                                  ],
+                                  style: TextStyles.secondaryText,
+                                ),
+                              ),
+                              Space.sml,
+                              Opacity(
+                                opacity: _showBuildNumberTaps < 3 ? 0 : 1,
+                                child: Text(
+                                  'Build number: $_buildNumber',
+                                  style: TextStyles.secondaryText,
+                                ),
+                              )
+                            ],
+                          ),
                         ),
-                      ),
-                      ListTile(
-                        dense: true,
-                        contentPadding: EdgeInsets.all(0),
-                        title: Text(
-                          'Logout',
-                          style: TextStyles.gemTitle,
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            ListTile(
+                              contentPadding: EdgeInsets.all(0),
+                              dense: true,
+                              title: Text(
+                                data.loading
+                                    ? 'Loading...'
+                                    : 'Logged in as ${data.viewerEmail}.',
+                                style: TextStyles.gemTitle,
+                              ),
+                            ),
+                            ListTile(
+                              dense: true,
+                              contentPadding: EdgeInsets.all(0),
+                              title: Text(
+                                'Logout',
+                                style: TextStyles.gemTitle,
+                              ),
+                              onTap: () async {
+                                SharedPreferences storage =
+                                    await SharedPreferences.getInstance();
+
+                                storage.remove('session');
+
+                                Navigator.of(context)
+                                    .pushReplacementNamed('/login');
+                                store.clear();
+                              },
+                            ),
+                          ],
                         ),
-                        onTap: () async {
-                          SharedPreferences storage =
-                              await SharedPreferences.getInstance();
-
-                          storage.remove('session');
-
-                          Navigator.of(context).pushReplacementNamed('/login');
-                          store.clear();
-                        },
-                      ),
-                    ],
-                  ),
-                ]),
+                      ]),
+                ),
+              ],
+            ),
           );
         },
       ),

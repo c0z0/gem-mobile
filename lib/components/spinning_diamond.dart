@@ -3,6 +3,7 @@ import 'package:flare_dart/math/mat2d.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flare_flutter/flare.dart';
 import 'package:flare_flutter/flare_controller.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class SpinningDiamond extends StatefulWidget {
   SpinningDiamond({this.constantSpeed = 0, this.size = 64});
@@ -52,16 +53,25 @@ class _SpinningDiamondState extends State<SpinningDiamond>
       onTap: () {
         _speed += 5;
       },
-      child: Container(
-        width: widget.size,
-        height: widget.size,
-        child: FlareActor(
-          'assets/rotating-diamond.flr',
-          controller: this,
-          animation: "idle",
-          alignment: Alignment.center,
-          fit: BoxFit.contain,
-        ),
+      child: Stack(
+        children: <Widget>[
+          SvgPicture.asset(
+            'assets/diamond.svg',
+            width: widget.size,
+            height: widget.size,
+          ),
+          Container(
+            width: widget.size,
+            height: widget.size,
+            child: FlareActor(
+              'assets/rotating-diamond.flr',
+              controller: this,
+              animation: "idle",
+              alignment: Alignment.center,
+              fit: BoxFit.contain,
+            ),
+          ),
+        ],
       ),
     );
   }

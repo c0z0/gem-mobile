@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:Gem/components/title_bar.dart';
 import 'package:Gem/components/toolbar.dart';
-import 'package:Gem/components/spinning_diamond.dart';
 
-final _diamond = SpinningDiamond(
-  size: 32,
+final _diamond = SvgPicture.asset(
+  'assets/diamond.svg',
+  width: 32,
+  height: 32,
 );
 
 class NavBar extends StatefulWidget {
