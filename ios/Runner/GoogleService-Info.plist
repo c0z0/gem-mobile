@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>116490025867-of21emv6jvtvi1j1pjrmsthjcoio42hj.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.116490025867-of21emv6jvtvi1j1pjrmsthjcoio42hj</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>116490025867-1hvuggjc8l5nuna1b02i2d2bcji0qfhj.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBMVQmDbGTTPtJOP3Fvi0h7cqnSQI-YKBs</string>
+	<key>GCM_SENDER_ID</key>
+	<string>116490025867</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.cserdean.gem</string>
+	<key>PROJECT_ID</key>
+	<string>shrt-cf7a3</string>
+	<key>STORAGE_BUCKET</key>
+	<string>shrt-cf7a3.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false/>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false/>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true/>
+	<key>IS_GCM_ENABLED</key>
+	<true/>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true/>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:116490025867:ios:e50edd38b54f0423</string>
+	<key>DATABASE_URL</key>
+	<string>https://shrt-cf7a3.firebaseio.com</string>
+</dict>
+</plist>
