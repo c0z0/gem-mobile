@@ -58,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   dispose() {
-    _inputController.removeListener(_onEmailChange);
+    _inputController.dispose();
     super.dispose();
   }
 
@@ -131,7 +131,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   hintText: 'you@domain.com',
                   keyboardType: TextInputType.emailAddress,
                   autoFocus: true,
-                  onChanged: _onEmailChange,
                   onSubmitted: (s) {
                     if (_email.length > 0) runMutation({'email': _email});
                   },

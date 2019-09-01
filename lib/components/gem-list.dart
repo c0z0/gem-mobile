@@ -148,8 +148,9 @@ class _GemListState extends State<GemList> {
 
   Widget _buildGems(List gems, List folders, bool loading, Function deleteGem) {
     final filteredGems = gems
-        .where(
-            (g) => _searchQuery.length == 0 || _searchResults.contains(g['id']))
+        .where((g) =>
+            (g['favorite'] || !widget.favorites) &&
+            (_searchQuery.length == 0 || _searchResults.contains(g['id'])))
         .toList();
 
     final List<Widget> itemList = _buildFolders(filteredGems, folders);
