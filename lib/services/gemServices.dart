@@ -6,6 +6,7 @@ final _viewerQuery = """
     viewer {
       __typename
       email
+      avatar
       gems {
         title
         displayUrl

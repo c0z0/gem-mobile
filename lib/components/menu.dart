@@ -123,6 +123,19 @@ class _MenuState extends State<Menu> {
                                   .pushReplacementNamed('/portal'),
                             ),
                             ListTile(
+                              leading: Container(
+                                width: 32.0,
+                                height: 32.0,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                    fit: BoxFit.fill,
+                                    image: NetworkImage(
+                                      data.loading ? '' : data.viewerAvatar,
+                                    ),
+                                  ),
+                                ),
+                              ),
                               contentPadding: EdgeInsets.all(0),
                               dense: true,
                               title: Text(

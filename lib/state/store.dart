@@ -14,6 +14,7 @@ class GemsData {
   bool createLoading;
   bool createError;
   String viewerEmail;
+  String viewerAvatar;
   int deletedIndex;
   bool error;
 
@@ -21,6 +22,7 @@ class GemsData {
     this.folders,
     this.deletedIndex,
     this.viewerEmail,
+    this.viewerAvatar,
     this.gems,
     this.loading: true,
     this.error: false,
@@ -46,6 +48,7 @@ class GemsStore {
       loading: _data.value.loading,
       fetched: _data.value.fetched,
       createLoading: _data.value.createLoading,
+      viewerAvatar: _data.value.viewerAvatar,
       createError: _data.value.createError,
     );
   }
@@ -186,6 +189,7 @@ class GemsStore {
       final _newData = _cloneData();
       _newData.gems = gems;
       _newData.viewerEmail = res.data['viewer']['email'];
+      _newData.viewerAvatar = res.data['viewer']['avatar'];
       _newData.folders = folders;
       _newData.fetched = true;
       _newData.loading = false;
