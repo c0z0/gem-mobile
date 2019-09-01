@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import 'package:Gem/components/navbar.dart';
 import 'package:Gem/components/input.dart';
 import 'package:Gem/components/button.dart';
 import 'package:Gem/styles.dart';

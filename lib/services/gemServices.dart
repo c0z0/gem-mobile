@@ -202,3 +202,19 @@ Future createFolder(String title) async {
     ),
   );
 }
+
+final _searchQuery = """
+  query searchGems(\$query: String!){
+    search(query: \$query) {
+      id
+    }
+  }
+""";
+
+Future search(String query) async {
+  final client = _getClient();
+
+  return await client.query(
+    QueryOptions(document: _searchQuery, variables: {'query': query}),
+  );
+}

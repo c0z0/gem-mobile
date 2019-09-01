@@ -9,7 +9,7 @@ class Toolbar extends StatelessWidget {
 
   final Function onSearchQueryChange;
 
-  Toolbar({this.onSearchQueryChange});
+  Toolbar({@required this.onSearchQueryChange});
 
   @override
   Widget build(BuildContext context) {

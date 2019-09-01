@@ -78,6 +78,7 @@ class _InputState extends State<Input> {
           focusNode: _focus,
           enabled: this.widget.enabled,
           autofocus: this.widget.autoFocus,
+          onChanged: widget.onChanged,
           keyboardType: this.widget.keyboardType,
           onSubmitted: widget.onSubmitted,
           decoration: InputDecoration(
