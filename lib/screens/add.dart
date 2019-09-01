@@ -79,14 +79,13 @@ class _AddScreenState extends State<AddScreen>
         return Scaffold(
           backgroundColor: Colors.white,
           body: Container(
-            padding:
-                EdgeInsets.only(top: NavBar.height - 64, left: 12, right: 12),
+            padding: EdgeInsets.only(top: 32, left: 12, right: 12),
             child: SafeArea(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Hero(tag: 'diamond', child: _diamond),
-                  Space.lrg,
+                  Space.med,
                   Text('Add a gem', style: TextStyles.h1),
                   Space.lrg,
                   Text('Link:', style: TextStyles.secondaryText),

@@ -7,6 +7,7 @@ import 'dart:io' show Platform;
 
 import 'package:Gem/screens/splash.dart';
 import 'package:Gem/screens/add.dart';
+import 'package:Gem/screens/portal.dart';
 import 'package:Gem/screens/login_screen.dart';
 import './screens/gems.dart';
 import 'package:Gem/state/store.dart';
@@ -90,6 +91,7 @@ class _GemAppState extends ReceiveShareState<GemApp> {
           '/login': (BuildContext context) => LoginScreen(),
           '/add': (BuildContext context) => AddScreen(),
           '/gems': (BuildContext context) => Gems(),
+          '/portal': (BuildContext context) => Portal(),
         },
         home: Splash(),
       ),

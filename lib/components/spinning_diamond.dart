@@ -39,7 +39,7 @@ class _SpinningDiamondState extends State<SpinningDiamond>
 
   @override
   bool advance(FlutterActorArtboard artboard, double elapsed) {
-    _rotation += elapsed * _speed;
+    _rotation += elapsed * _speed * -1;
 
     if (_speed > widget.constantSpeed) _speed *= .95;
 

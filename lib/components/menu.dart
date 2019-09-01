@@ -113,13 +113,23 @@ class _MenuState extends State<Menu> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             ListTile(
+                              dense: true,
+                              contentPadding: EdgeInsets.all(0),
+                              title: Text(
+                                'Portal',
+                                style: TextStyles.gemTitle,
+                              ),
+                              onTap: () => Navigator.of(context)
+                                  .pushReplacementNamed('/portal'),
+                            ),
+                            ListTile(
                               contentPadding: EdgeInsets.all(0),
                               dense: true,
                               title: Text(
                                 data.loading
                                     ? 'Loading...'
                                     : 'Logged in as ${data.viewerEmail}.',
-                                style: TextStyles.gemTitle,
+                                style: TextStyles.secondaryText,
                               ),
                             ),
                             ListTile(
