@@ -22,7 +22,7 @@ class GemsData {
     this.folders,
     this.deletedIndex,
     this.viewerEmail,
-    this.viewerAvatar,
+    this.viewerAvatar: '',
     this.gems,
     this.loading: true,
     this.error: false,

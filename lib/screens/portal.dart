@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'dart:math' show Random;
 
 import 'package:Gem/styles.dart';
+import 'package:Gem/components/close_button.dart';
 
 class Switch extends StatefulWidget {
   final Function onChange;
@@ -191,84 +192,69 @@ class _PortalState extends State<Portal> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Stack(
-          children: <Widget>[
-            Positioned(
-              right: 2,
-              top: 16,
-              child: IconButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                icon: Icon(
-                  Icons.close,
-                  color: GemColors.blueGray,
+        child: CloseButtonStack(
+          child: Container(
+            child: Column(
+              children: <Widget>[
+                Switch(
+                  onChange: () {},
                 ),
-              ),
-            ),
-            Container(
-              child: Column(
-                children: <Widget>[
-                  Switch(
-                    onChange: () {},
-                  ),
-                  Space.lrg,
-                  Text(
-                    'Enter the code:',
-                    style: TextStyles.text,
-                  ),
-                  Space.sml,
-                  Container(
-                    width: 127,
-                    child: TextField(
-                      inputFormatters: <TextInputFormatter>[CodeFormatter()],
-                      maxLength: 3,
-                      keyboardType: TextInputType.text,
-                      maxLengthEnforced: true,
-                      onChanged: _onCodeChanged,
-                      controller: _textEditingController,
-                      style: TextStyles.h1.merge(TextStyle(letterSpacing: 8)),
-                      cursorColor: GemColors.text,
-                      cursorWidth: 1,
-                      decoration: InputDecoration(
-                        fillColor: Color(0xFFF9F9F9),
-                        filled: true,
-                        hintText: '* * *',
-                        hintStyle: TextStyle(color: Color(0xFFFDDDDDD)),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(16),
-                          ),
-                          borderSide: BorderSide(
-                            width: 1,
-                            color: Color(0xFFF9F9F9),
-                          ),
+                Space.lrg,
+                Text(
+                  'Enter the code:',
+                  style: TextStyles.text,
+                ),
+                Space.sml,
+                Container(
+                  width: 127,
+                  child: TextField(
+                    inputFormatters: <TextInputFormatter>[CodeFormatter()],
+                    maxLength: 3,
+                    keyboardType: TextInputType.text,
+                    maxLengthEnforced: true,
+                    onChanged: _onCodeChanged,
+                    controller: _textEditingController,
+                    style: TextStyles.h1.merge(TextStyle(letterSpacing: 8)),
+                    cursorColor: GemColors.text,
+                    cursorWidth: 1,
+                    decoration: InputDecoration(
+                      fillColor: Color(0xFFF9F9F9),
+                      filled: true,
+                      hintText: '* * *',
+                      hintStyle: TextStyle(color: Color(0xFFFDDDDDD)),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(16),
                         ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(16),
-                          ),
-                          borderSide: BorderSide(
-                            width: 1,
-                            color: Color(0xFFF9F9F9),
-                          ),
+                        borderSide: BorderSide(
+                          width: 1,
+                          color: Color(0xFFF9F9F9),
                         ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(16),
-                          ),
-                          borderSide: BorderSide(
-                            width: 1,
-                            color: Color(0xFFF9F9F9),
-                          ),
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(16),
+                        ),
+                        borderSide: BorderSide(
+                          width: 1,
+                          color: Color(0xFFF9F9F9),
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(16),
+                        ),
+                        borderSide: BorderSide(
+                          width: 1,
+                          color: Color(0xFFF9F9F9),
                         ),
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

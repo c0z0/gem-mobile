@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:Gem/components/input.dart';
+import 'package:Gem/components/close_button.dart';
 import 'package:Gem/components/button.dart';
 import 'package:Gem/styles.dart';
 import 'package:Gem/state/store.dart';
@@ -77,127 +78,129 @@ class _AddScreenState extends State<AddScreen>
       builder: (BuildContext context, GemsData data, GemsStore store) {
         return Scaffold(
           backgroundColor: Colors.white,
-          body: Container(
-            padding: EdgeInsets.only(top: 32, left: 12, right: 12),
-            child: SafeArea(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Hero(tag: 'diamond', child: _diamond),
-                  Space.med,
-                  Text('Add a gem', style: TextStyles.h1),
-                  Space.lrg,
-                  Text('Link:', style: TextStyles.secondaryText),
-                  Space.custom(8),
-                  Stack(
-                    children: <Widget>[
-                      Container(
-                        height: 48,
-                      ),
-                      Positioned(
-                        top: 0,
-                        left: 0,
-                        right: -12,
-                        child: Row(
-                          children: <Widget>[
-                            Expanded(
-                              child: Input(
-                                controller: _controller,
-                                enabled: true,
-                                autoFocus: true,
-                                hintText: 'example.com',
-                              ),
-                            ),
-                            IconButton(
-                              color: GemColors.purple,
-                              icon: Icon(
-                                Icons.content_paste,
-                                color: GemColors.blueGray,
-                              ),
-                              onPressed: () async {
-                                ClipboardData data =
-                                    await Clipboard.getData('text/plain');
-                                _controller.text = data.text;
-                                _controller.selection = TextSelection(
-                                    baseOffset: 0,
-                                    extentOffset: data.text.length);
-                                // _onUrlChange(data.text);
-                              },
-                            )
-                          ],
+          body: SafeArea(
+            child: CloseButtonStack(
+              child: Container(
+                padding: EdgeInsets.only(top: 32, left: 12, right: 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Hero(tag: 'diamond', child: _diamond),
+                    Space.med,
+                    Text('Add a gem', style: TextStyles.h1),
+                    Space.lrg,
+                    Text('Link:', style: TextStyles.secondaryText),
+                    Space.custom(8),
+                    Stack(
+                      children: <Widget>[
+                        Container(
+                          height: 48,
                         ),
-                      ),
-                    ],
-                  ),
-                  Space.sml,
-                  Text('Folder:', style: TextStyles.secondaryText),
-                  Space.custom(8),
-                  Material(
-                    color: Colors.white,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          width: 1,
-                          color: Color(0xFFDDDDDD),
-                        ),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(7.0),
-                        ),
-                      ),
-                      child: InkWell(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(6.0),
-                        ),
-                        onTap: _showFolders,
-                        child: Container(
-                          padding: EdgeInsets.all(10),
+                        Positioned(
+                          top: 0,
+                          left: 0,
+                          right: -12,
                           child: Row(
                             children: <Widget>[
-                              Icon(
-                                Icons.folder_open,
-                                color: GemColors.blueGray,
+                              Expanded(
+                                child: Input(
+                                  controller: _controller,
+                                  enabled: true,
+                                  autoFocus: true,
+                                  hintText: 'example.com',
+                                ),
                               ),
-                              HorSpace.sml,
-                              Text(
-                                _getFolder()['title'] ?? 'No folder',
-                                style: TextStyles.gemTitle,
+                              IconButton(
+                                color: GemColors.purple,
+                                icon: Icon(
+                                  Icons.content_paste,
+                                  color: GemColors.blueGray,
+                                ),
+                                onPressed: () async {
+                                  ClipboardData data =
+                                      await Clipboard.getData('text/plain');
+                                  _controller.text = data.text;
+                                  _controller.selection = TextSelection(
+                                      baseOffset: 0,
+                                      extentOffset: data.text.length);
+                                  // _onUrlChange(data.text);
+                                },
                               )
                             ],
                           ),
                         ),
+                      ],
+                    ),
+                    Space.sml,
+                    Text('Folder:', style: TextStyles.secondaryText),
+                    Space.custom(8),
+                    Material(
+                      color: Colors.white,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            width: 1,
+                            color: Color(0xFFDDDDDD),
+                          ),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(7.0),
+                          ),
+                        ),
+                        child: InkWell(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(6.0),
+                          ),
+                          onTap: _showFolders,
+                          child: Container(
+                            padding: EdgeInsets.all(10),
+                            child: Row(
+                              children: <Widget>[
+                                Icon(
+                                  Icons.folder_open,
+                                  color: GemColors.blueGray,
+                                ),
+                                HorSpace.sml,
+                                Text(
+                                  _getFolder()['title'] ?? 'No folder',
+                                  style: TextStyles.gemTitle,
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                  Space.med,
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      PrimaryButton(
-                        onPressed: () {
-                          store.createGem(_url, _selectedFolderId, () {
-                            Navigator.pop(context);
-                          });
-                        },
-                        text: data.createLoading ? 'Loading...' : 'Add gem',
-                        disabled: _url.length == 0 || data.createLoading,
-                      ),
-                      FlatButton(
+                    Space.med,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        PrimaryButton(
                           onPressed: () {
-                            Navigator.of(context).pop();
+                            store.createGem(_url, _selectedFolderId, () {
+                              Navigator.pop(context);
+                            });
                           },
-                          child: Text(
-                            'CANCEL',
-                            textAlign: TextAlign.end,
-                            style: TextStyle(color: GemColors.text),
-                          ))
-                    ],
-                  ),
-                  Space.sml,
-                  data.createError
-                      ? Text('Something went wrong', style: TextStyles.error)
-                      : null,
-                ].where((w) => w != null).toList(),
+                          text: data.createLoading ? 'Loading...' : 'Add gem',
+                          disabled: _url.length == 0 || data.createLoading,
+                        ),
+                        FlatButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text(
+                              'CANCEL',
+                              textAlign: TextAlign.end,
+                              style: TextStyle(color: GemColors.text),
+                            ))
+                      ],
+                    ),
+                    Space.sml,
+                    data.createError
+                        ? Text('Something went wrong', style: TextStyles.error)
+                        : null,
+                  ].where((w) => w != null).toList(),
+                ),
               ),
             ),
           ),
