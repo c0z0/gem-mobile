@@ -46,6 +46,8 @@ PODS:
     - GoogleUtilities/UserDefaults (~> 6.2)
     - Protobuf (~> 3.1)
   - Flutter (1.0.0)
+  - flutter_appavailability (0.0.1):
+    - Flutter
   - flutter_custom_tabs (0.0.1):
     - Flutter
   - google_sign_in (0.0.1):
@@ -113,6 +115,7 @@ DEPENDENCIES:
   - Firebase/Core
   - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
   - Flutter (from `.symlinks/flutter/ios`)
+  - flutter_appavailability (from `.symlinks/plugins/flutter_appavailability/ios`)
   - flutter_custom_tabs (from `.symlinks/plugins/flutter_custom_tabs/ios`)
   - google_sign_in (from `.symlinks/plugins/google_sign_in/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
@@ -147,6 +150,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_messaging/ios"
   Flutter:
     :path: ".symlinks/flutter/ios"
+  flutter_appavailability:
+    :path: ".symlinks/plugins/flutter_appavailability/ios"
   flutter_custom_tabs:
     :path: ".symlinks/plugins/flutter_custom_tabs/ios"
   google_sign_in:
@@ -173,6 +178,7 @@ SPEC CHECKSUMS:
   FirebaseInstanceID: 8b42755db950682e7de0d167bc6fb26a57b244af
   FirebaseMessaging: 930e4cce01f8f1e634cfdd1881db471fb61be883
   Flutter: 58dd7d1b27887414a370fcccb9e645c08ffd7a6a
+  flutter_appavailability: ebf8f85abea44436d1262fcde8a4e64b2534b01a
   flutter_custom_tabs: 9f7596dc1593f2e0d0562ce888dde6447751e97c
   google_sign_in: 27e70a98b529f0b076d4b19f231b81da28b1750b
   GoogleAppMeasurement: 86a82f0e1f20b8eedf8e20326530138fd71409de
@@ -190,6 +196,6 @@ SPEC CHECKSUMS:
   shared_preferences: 1feebfa37bb57264736e16865e7ffae7fc99b523
   url_launcher: 0067ddb8f10d36786672aa0722a21717dba3a298
 
-PODFILE CHECKSUM: 1ce724a977064d880f13550a68adedd155db932c
+PODFILE CHECKSUM: 808e160fc7102d689ac28ad61479111f0a5bb737
 
 COCOAPODS: 1.6.1

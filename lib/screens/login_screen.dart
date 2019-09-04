@@ -1,10 +1,13 @@
 import 'package:Gem/styles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'dart:io' show Platform;
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/gestures.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_appavailability/flutter_appavailability.dart';
 
 import 'package:Gem/styles.dart' show TextStyles, Space;
 import 'package:Gem/components/button.dart' show PrimaryButton;
@@ -46,12 +49,14 @@ class _LoginScreenState extends State<LoginScreen> {
   var _email = '';
   var _verificationCode;
   var _loginId;
+  bool _hasEmailApp = false;
   TextEditingController _inputController = TextEditingController();
 
   @override
   initState() {
     _inputController.addListener(_onEmailChange);
     checkForUpdate(context);
+    _checkEmailAppAvailability();
 
     super.initState();
   }
@@ -187,6 +192,25 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  _launchEmailApp() async {
+    await AppAvailability.launchApp(
+        Platform.isIOS ? "message://" : "com.google.android.gm");
+  }
+
+  _checkEmailAppAvailability() async {
+    try {
+      await AppAvailability.checkAvailability(
+          Platform.isIOS ? "message://" : "com.google.android.gm");
+      setState(() {
+        _hasEmailApp = true;
+      });
+    } on PlatformException catch (_) {
+      setState(() {
+        _hasEmailApp = false;
+      });
+    }
+  }
+
   Widget _buildAwaitingVerification(BuildContext context) {
     return Query(
       options: QueryOptions(
@@ -245,7 +269,13 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
             Space.med,
-          ],
+            _hasEmailApp
+                ? PrimaryButton(
+                    text: 'Open email app',
+                    onPressed: _launchEmailApp,
+                  )
+                : null,
+          ].where((w) => w != null).toList(),
         );
       },
     );
