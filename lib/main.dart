@@ -4,6 +4,8 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:share/receive_share_state.dart';
 import 'dart:io' show Platform;
+import 'package:sentry/sentry.dart';
+import 'package:flutter/foundation.dart' show kReleaseMode;
 
 import 'package:Gem/screens/splash.dart';
 import 'package:Gem/screens/add.dart';
@@ -40,9 +42,38 @@ final client = ValueNotifier<GraphQLClient>(
 );
 
 void main() {
-  registerStore();
-  registerClient(client.value);
-  runApp(GemApp());
+  if (kReleaseMode) {
+    final SentryClient sentry = new SentryClient(
+        dsn: "https://7b2c5fa087fc4c8cb89902fb9f1dc326@sentry.io/1551593");
+
+    try {
+      FlutterError.onError = (details, {bool forceReport = false}) {
+        try {
+          sentry.captureException(
+            exception: details.exception,
+            stackTrace: details.stack,
+          );
+        } catch (e) {
+          print('Sending report to sentry.io failed: $e');
+        } finally {
+          FlutterError.dumpErrorToConsole(details, forceReport: forceReport);
+        }
+      };
+
+      registerStore();
+      registerClient(client.value);
+      runApp(GemApp());
+    } catch (error, stackTrace) {
+      sentry.captureException(
+        exception: error,
+        stackTrace: stackTrace,
+      );
+    }
+  } else {
+    registerStore();
+    registerClient(client.value);
+    runApp(GemApp());
+  }
 }
 
 class GemApp extends StatefulWidget {
