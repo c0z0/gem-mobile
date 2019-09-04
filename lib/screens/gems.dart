@@ -3,7 +3,7 @@ import 'package:share/receive_share_state.dart';
 import 'dart:io' show Platform;
 
 import 'package:Gem/components/tabbar.dart';
-import 'package:Gem/components/gem-list.dart';
+import 'package:Gem/components/gem_list.dart';
 import 'package:Gem/state/store.dart';
 import 'package:Gem/screens/add.dart';
 import 'package:Gem/utlis.dart' show checkForUpdate;

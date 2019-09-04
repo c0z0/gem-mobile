@@ -190,6 +190,23 @@ class _GemListState extends State<GemList> {
   }
 
   void _showGemDetails(context, gem, deleteGem, toggleFavorite) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (BuildContext bc) {
+          return GemDetails(
+            gem: gem,
+            showSnackbar: (Flushbar bar) {
+              bar..show(context);
+            },
+            deleteGem: deleteGem,
+            toggleFavorite: toggleFavorite,
+            index:
+                getStore().current.gems.indexWhere((g) => g['id'] == gem['id']),
+          );
+        },
+      ),
+    );
+    return;
     showModalBottomSheet(
         context: context,
         builder: (BuildContext bc) {

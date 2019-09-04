@@ -50,11 +50,9 @@ class _CreateFolderState extends State<CreateFolder>
   Widget build(BuildContext context) {
     List<String> hints = ['School', 'Gym', 'Design', 'Motivational']..shuffle();
 
-    return AnimatedPadding(
-      padding: MediaQuery.of(context).viewInsets,
-      duration: const Duration(milliseconds: 100),
-      curve: Curves.decelerate,
-      child: SingleChildScrollView(
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SingleChildScrollView(
         child: Container(
           color: Colors.white,
           child: SafeArea(

@@ -65,11 +65,13 @@ class _AddScreenState extends State<AddScreen>
   }
 
   _showFolders() {
-    showModalBottomSheet(
-        context: context,
+    Navigator.of(context).push(
+      MaterialPageRoute(
         builder: (BuildContext context) => FolderSelector(
-              onFolderSelected: _onFolderChange,
-            ));
+          onFolderSelected: _onFolderChange,
+        ),
+      ),
+    );
   }
 
   @override
@@ -294,26 +296,28 @@ class _FolderSelectorState extends State<FolderSelector> {
         },
       );
 
-    return SingleChildScrollView(
-      child: Container(
-        color: Colors.white,
-        child: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Container(
-                padding: EdgeInsets.only(top: 36, left: 28, right: 28),
-                color: Colors.white,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text('Select folder', style: TextStyles.h1),
-                    Space.med,
-                  ],
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Container(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.only(top: 36, left: 28, right: 28),
+                  color: Colors.white,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text('Select folder', style: TextStyles.h1),
+                      Space.med,
+                    ],
+                  ),
                 ),
-              ),
-              _buildFolders(context),
-            ],
+                _buildFolders(context),
+              ],
+            ),
           ),
         ),
       ),

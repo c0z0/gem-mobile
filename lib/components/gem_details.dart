@@ -7,6 +7,7 @@ import 'package:Gem/components/create_folder.dart';
 import 'package:Gem/styles.dart';
 import 'package:Gem/state/store.dart';
 import 'package:Gem/components/gem.dart';
+import 'package:Gem/components/close_button.dart' show CloseButtonStack;
 
 class GemDetails extends StatefulWidget {
   final Map gem;
@@ -54,6 +55,7 @@ class _GemDetailsState extends State<GemDetails>
       duration: Duration(seconds: 3),
       animationDuration: Duration(milliseconds: 500),
       padding: EdgeInsets.all(12),
+      margin: EdgeInsets.all(12),
       borderRadius: 6,
       backgroundColor: GemColors.text,
     ));
@@ -82,6 +84,7 @@ class _GemDetailsState extends State<GemDetails>
     return Material(
       color: Colors.white,
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
           ListTile(
             dense: true,
@@ -226,49 +229,50 @@ class _GemDetailsState extends State<GemDetails>
 
     return Material(
       color: Colors.white,
-      child: Column(
-        children: <Widget>[
-          ListTile(
-            dense: true,
-            contentPadding: EdgeInsets.symmetric(horizontal: 28),
-            leading: Icon(Icons.arrow_back),
-            // enabled: false,
-            title: Text(
-              'Back',
-              style: TextStyles.gemTitle,
+      child: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            ListTile(
+              dense: true,
+              contentPadding: EdgeInsets.symmetric(horizontal: 28),
+              leading: Icon(Icons.arrow_back),
+              // enabled: false,
+              title: Text(
+                'Back',
+                style: TextStyles.gemTitle,
+              ),
+              onTap: () {
+                _toggleFolders();
+              },
             ),
-            onTap: () {
-              _toggleFolders();
-            },
-          ),
-          ListTile(
-            dense: true,
-            contentPadding: EdgeInsets.symmetric(horizontal: 28),
-            leading: Icon(Icons.create_new_folder),
-            // enabled: false,
-            title: Text(
-              'New folder',
-              style: TextStyles.gemTitle,
+            ListTile(
+              dense: true,
+              contentPadding: EdgeInsets.symmetric(horizontal: 28),
+              leading: Icon(Icons.create_new_folder),
+              // enabled: false,
+              title: Text(
+                'New folder',
+                style: TextStyles.gemTitle,
+              ),
+              onTap: () {
+                _toggleCreateFolder();
+              },
             ),
-            onTap: () {
-              _toggleCreateFolder();
-            },
-          ),
-        ]..addAll(folders),
+          ]..addAll(folders),
+        ),
       ),
     );
   }
 
-  Widget buildDetails(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-        color: Colors.white,
-        child: SafeArea(
+  Widget _buildDetails(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: CloseButtonStack(
           child: Column(
             children: <Widget>[
               Container(
                 padding: EdgeInsets.only(top: 36, left: 28, right: 28),
-                color: Colors.white,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -284,7 +288,11 @@ class _GemDetailsState extends State<GemDetails>
                   ],
                 ),
               ),
-              _showFolders ? _buildFolders() : _buildMenu(),
+              Expanded(
+                child: Container(
+                  child: _showFolders ? _buildFolders() : _buildMenu(),
+                ),
+              ),
             ],
           ),
         ),
@@ -305,6 +313,6 @@ class _GemDetailsState extends State<GemDetails>
         },
       );
 
-    return buildDetails(context);
+    return _buildDetails(context);
   }
 }
