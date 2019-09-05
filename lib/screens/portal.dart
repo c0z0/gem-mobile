@@ -1,9 +1,14 @@
+import 'package:Gem/components/button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:math' show Random;
+import 'dart:async';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:Gem/styles.dart';
 import 'package:Gem/components/close_button.dart';
+import 'package:Gem/services/gemServices.dart' show queryPortal, mutatePortal;
+import 'package:Gem/components/input.dart';
 
 class Switch extends StatefulWidget {
   final Function onChange;
@@ -56,7 +61,7 @@ class _SwitchState extends State<Switch> with SingleTickerProviderStateMixin {
     else
       _animationController.reverse();
     _send = !_send;
-    //widget.onChange();
+    widget.onChange();
   }
 
   @override
@@ -64,7 +69,6 @@ class _SwitchState extends State<Switch> with SingleTickerProviderStateMixin {
     return GestureDetector(
       onTap: _onChange,
       child: Container(
-        margin: EdgeInsets.only(top: 118),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -153,15 +157,86 @@ class CodeFormatter extends TextInputFormatter {
   }
 }
 
+class Receive extends StatefulWidget {
+  final String code;
+
+  Receive({this.code});
+
+  State<Receive> createState() => _ReceiveState();
+}
+
+class _ReceiveState extends State<Receive> {
+  Timer _timer;
+
+  @override
+  void initState() {
+    _timer = Timer.periodic(Duration(seconds: 1), _queryPortal);
+    super.initState();
+  }
+
+  _queryPortal(_) async {
+    final res = await queryPortal(widget.code);
+
+    if (res.data['portal'] != null) {
+      launch(res.data['portal']['href']);
+      Navigator.of(context).pop();
+    }
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        Text(
+          'Enter the code to recieve url:',
+          style: TextStyles.text,
+        ),
+        Space.sml,
+        Container(
+          width: 127,
+          padding: EdgeInsets.symmetric(vertical: 16),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(
+              Radius.circular(16),
+            ),
+            color: Color(0xFFF9F9F9),
+          ),
+          child: Column(
+            children: <Widget>[
+              Text(
+                widget.code,
+                style: TextStyles.h1.merge(TextStyle(letterSpacing: 8)),
+              ),
+            ],
+          ),
+        )
+      ],
+    );
+  }
+}
+
 class Portal extends StatefulWidget {
+  final String href;
+
+  Portal({this.href: ""});
+
   @override
   State<Portal> createState() => _PortalState();
 }
 
 class _PortalState extends State<Portal> {
-  TextEditingController _textEditingController = TextEditingController();
+  TextEditingController _codeController = TextEditingController();
+  TextEditingController _hrefController = TextEditingController();
   bool _send = true;
   String _code = "";
+  String _href;
+  bool _loading = false;
   String _recieveCode = "";
 
   String _generateCode() {
@@ -172,19 +247,160 @@ class _PortalState extends State<Portal> {
 
   @override
   void initState() {
+    _recieveCode = _generateCode();
+    _href = widget.href;
+    _hrefController.text = widget.href;
     super.initState();
   }
 
   @override
   void dispose() {
-    _textEditingController.dispose();
+    _codeController.dispose();
+    _hrefController.dispose();
     super.dispose();
   }
 
   void _onCodeChanged(String code) {
     setState(() {
-      _code = _textEditingController.text;
+      _code = _codeController.text;
     });
+  }
+
+  void _onHrefChanged(String href) {
+    setState(() {
+      _href = _hrefController.text;
+    });
+  }
+
+  _sendPortal() async {
+    setState(() {
+      _loading = true;
+    });
+
+    await mutatePortal(href: _href, code: _code);
+
+    setState(() {
+      _loading = false;
+      _code = "";
+      _href = "";
+      _codeController.text = "";
+      _hrefController.text = "";
+    });
+  }
+
+  Widget _renderSendForm(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        Text(
+          'Enter the code:',
+          style: TextStyles.text,
+        ),
+        Space.sml,
+        Container(
+          width: 127,
+          child: TextField(
+            inputFormatters: <TextInputFormatter>[CodeFormatter()],
+            maxLength: 3,
+            keyboardType: TextInputType.text,
+            maxLengthEnforced: true,
+            onChanged: _onCodeChanged,
+            controller: _codeController,
+            style: TextStyles.h1.merge(TextStyle(letterSpacing: 8)),
+            cursorColor: GemColors.text,
+            cursorWidth: 1,
+            decoration: InputDecoration(
+              fillColor: Color(0xFFF9F9F9),
+              filled: true,
+              hintText: '* * *',
+              hintStyle: TextStyle(color: Color(0xFFFDDDDDD)),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(16),
+                ),
+                borderSide: BorderSide(
+                  width: 1,
+                  color: Color(0xFFF9F9F9),
+                ),
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(16),
+                ),
+                borderSide: BorderSide(
+                  width: 1,
+                  color: Color(0xFFF9F9F9),
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(16),
+                ),
+                borderSide: BorderSide(
+                  width: 1,
+                  color: Color(0xFFF9F9F9),
+                ),
+              ),
+            ),
+          ),
+        ),
+        _code.length == 3
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Space.sml,
+                  Text('Link:', style: TextStyles.secondaryText),
+                  Space.custom(8),
+                  Stack(
+                    children: <Widget>[
+                      Container(
+                        height: 48,
+                      ),
+                      Positioned(
+                        top: 0,
+                        left: 0,
+                        right: -12,
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: Input(
+                                onChanged: _onHrefChanged,
+                                controller: _hrefController,
+                                enabled: true,
+                                autoFocus: true,
+                                hintText: 'example.com',
+                              ),
+                            ),
+                            IconButton(
+                              color: GemColors.purple,
+                              icon: Icon(
+                                Icons.content_paste,
+                                color: GemColors.blueGray,
+                              ),
+                              onPressed: () async {
+                                ClipboardData data =
+                                    await Clipboard.getData('text/plain');
+                                _hrefController.text = data.text;
+                                _hrefController.selection = TextSelection(
+                                    baseOffset: 0,
+                                    extentOffset: data.text.length);
+                                // _onUrlChange(data.text);
+                              },
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  PrimaryButton(
+                    text: _loading ? 'Loading...' : 'Send',
+                    disabled: _href.length == 0 || _loading,
+                    onPressed: _sendPortal,
+                  )
+                ],
+              )
+            : null,
+      ].where((w) => w != null).toList(),
+    );
   }
 
   @override
@@ -194,63 +410,29 @@ class _PortalState extends State<Portal> {
       body: SafeArea(
         child: CloseButtonStack(
           child: Container(
+            margin: EdgeInsets.only(top: 36, left: 28, right: 28),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Switch(
-                  onChange: () {},
-                ),
-                Space.lrg,
                 Text(
-                  'Enter the code:',
-                  style: TextStyles.text,
+                  'Gem portal',
+                  style: TextStyles.h1,
                 ),
-                Space.sml,
-                Container(
-                  width: 127,
-                  child: TextField(
-                    inputFormatters: <TextInputFormatter>[CodeFormatter()],
-                    maxLength: 3,
-                    keyboardType: TextInputType.text,
-                    maxLengthEnforced: true,
-                    onChanged: _onCodeChanged,
-                    controller: _textEditingController,
-                    style: TextStyles.h1.merge(TextStyle(letterSpacing: 8)),
-                    cursorColor: GemColors.text,
-                    cursorWidth: 1,
-                    decoration: InputDecoration(
-                      fillColor: Color(0xFFF9F9F9),
-                      filled: true,
-                      hintText: '* * *',
-                      hintStyle: TextStyle(color: Color(0xFFFDDDDDD)),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(16),
-                        ),
-                        borderSide: BorderSide(
-                          width: 1,
-                          color: Color(0xFFF9F9F9),
-                        ),
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(16),
-                        ),
-                        borderSide: BorderSide(
-                          width: 1,
-                          color: Color(0xFFF9F9F9),
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(16),
-                        ),
-                        borderSide: BorderSide(
-                          width: 1,
-                          color: Color(0xFFF9F9F9),
-                        ),
-                      ),
+                Column(
+                  children: <Widget>[
+                    Space.lrg,
+                    Switch(
+                      onChange: () {
+                        setState(() {
+                          _send = !_send;
+                        });
+                      },
                     ),
-                  ),
+                    Space.lrg,
+                    _send
+                        ? _renderSendForm(context)
+                        : Receive(code: _recieveCode),
+                  ],
                 ),
               ],
             ),

@@ -206,21 +206,6 @@ class _GemListState extends State<GemList> {
         },
       ),
     );
-    return;
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext bc) {
-          return GemDetails(
-            gem: gem,
-            showSnackbar: (Flushbar bar) {
-              bar..show(context);
-            },
-            deleteGem: deleteGem,
-            toggleFavorite: toggleFavorite,
-            index:
-                getStore().current.gems.indexWhere((g) => g['id'] == gem['id']),
-          );
-        });
   }
 
   @override

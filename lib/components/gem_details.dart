@@ -7,6 +7,7 @@ import 'package:Gem/components/create_folder.dart';
 import 'package:Gem/styles.dart';
 import 'package:Gem/state/store.dart';
 import 'package:Gem/components/gem.dart';
+import 'package:Gem/screens/portal.dart';
 import 'package:Gem/components/close_button.dart' show CloseButtonStack;
 
 class GemDetails extends StatefulWidget {
@@ -111,6 +112,20 @@ class _GemDetailsState extends State<GemDetails>
             onTap: () async {
               Share.plainText(text: widget.gem['href']).share();
               Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            dense: true,
+            contentPadding: EdgeInsets.symmetric(horizontal: 28),
+            leading: Icon(Icons.send),
+            title: Text(
+              'Send with portal',
+              style: TextStyles.gemTitle,
+            ),
+            onTap: () async {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) =>
+                      Portal(href: widget.gem['href'])));
             },
           ),
           ListTile(

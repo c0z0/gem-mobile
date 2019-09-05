@@ -219,3 +219,39 @@ Future search(String query) async {
     QueryOptions(document: _searchQuery, variables: {'query': query}),
   );
 }
+
+final _portalQuery = """
+  query getPortal(\$code: String!) {
+    portal(code: \$code) {
+      href
+      code
+      id
+    }
+  }
+""";
+
+Future queryPortal(String code) async {
+  final client = _getClient();
+
+  return await client.query(
+    QueryOptions(
+        document: _portalQuery,
+        variables: {'code': code},
+        fetchPolicy: FetchPolicy.networkOnly),
+  );
+}
+
+final _portalMutation = """
+   mutation portal(\$code: String!, \$href: String!) {
+    createPortal(code: \$code, href: \$href) {
+      code
+    }
+  }
+""";
+
+Future mutatePortal({String code, String href}) async {
+  final client = _getClient();
+
+  return await client.mutate(MutationOptions(
+      document: _portalMutation, variables: {'code': code, 'href': href}));
+}
